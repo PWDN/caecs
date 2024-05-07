@@ -18,8 +18,6 @@ jar {
   attributes 'Main-Class': 'com.vitaliirohozhyn_arsenisialitski.caecs.CAECS'
  }
 }
-project.ext.lwjglVersion = "3.3.3"
-project.ext.lwjglNatives = "natives-linux"
 
 repositories {
  mavenCentral()
