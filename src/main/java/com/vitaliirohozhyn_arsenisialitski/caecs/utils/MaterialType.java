@@ -1,4 +1,4 @@
-package com.vitaliirohozhyn_arsenisialitski.utils;
+package com.vitaliirohozhyn_arsenisialitski.caecs.utils;
 
 public enum MaterialType {
     GOLD( // https://en.wikipedia.org/wiki/Gold

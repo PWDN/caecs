@@ -2,7 +2,7 @@ package com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
 
-import com.vitaliirohozhyn_arsenisialitski.utils.MaterialType;
+import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialType;
 
 class MaterialTypeComponent implements Component {
     public MaterialType materialType;
