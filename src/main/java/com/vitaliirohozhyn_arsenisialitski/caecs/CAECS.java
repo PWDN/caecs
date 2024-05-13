@@ -1,105 +1,26 @@
 package com.vitaliirohozhyn_arsenisialitski.caecs;
 
 import javax.swing.*;
+import javax.swing.plaf.metal.DefaultMetalTheme;
+import javax.swing.plaf.metal.MetalLookAndFeel;
+import javax.swing.plaf.metal.OceanTheme;
+
 import java.lang.Thread;
 import java.util.Random;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
-import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.AirComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ColorComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.IronComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.SandComponent;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems.KinematicsSystem;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems.RenderSystem;
+import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.MainScreen;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECSSystem;
 
-import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Graphics;
-
-class Viewport extends Canvas {
-    public Viewport() {
-        super();
-        createBufferStrategy(1);
-    }
-
-    public void draw() {
-    }
-
-    public Graphics getGraphicsReady() {
-        return this.getBufferStrategy().getDrawGraphics();
-    }
-}
-
-class RenderSystem extends ECSSystem {
-    private final Viewport viewport;
-    private final int zoom;
-
-    public RenderSystem(ECS a_ecs, int a_zoom) {
-        super(a_ecs);
-        this.viewport = new Viewport();
-        this.zoom = a_zoom;
-    }
-
-    public Viewport getViewport() {
-        return this.viewport;
-    }
-
-    public void clearViewPort() {
-        this.viewport.getGraphicsReady().clearRect(0, 0, 400, 400);
-    }
-
-    public void onFrameEnd(Entity a_entity) {
-        if (a_entity.doesEntityHasComponentOfType(AirComponent.class))
-            return;
-        if (!a_entity.doesEntityHasComponentOfType(PositionComponent.class)
-                || !a_entity.doesEntityHasComponentOfType(ColorComponent.class))
-            return;
-        ColorComponent comp = (ColorComponent) a_entity.getFirstComponentOfType(ColorComponent.class);
-        PositionComponent position = (PositionComponent) a_entity.getFirstComponentOfType(PositionComponent.class);
-        Graphics g = this.viewport.getGraphicsReady();
-        g.setColor(comp.color);
-        g.fillRect(
-                position.x * this.zoom,
-                position.y * this.zoom,
-                this.zoom,
-                this.zoom);
-    }
-}
-
-class PhysicsSystem extends ECSSystem {
-    public PhysicsSystem(ECS a_ecs) {
-        super(a_ecs);
-    };
-
-    public void onFrameStart(Entity a_entity) {
-        if (!a_entity.doesEntityHasComponentOfType(SandComponent.class))
-            return;
-        PositionComponent position = (PositionComponent) a_entity.getFirstComponentOfType(PositionComponent.class);
-        if (this.ecs.findFirstEntityByFilter(
-                (a_entity_in) -> {
-                    PositionComponent position_in = (PositionComponent) a_entity_in
-                            .getFirstComponentOfType(PositionComponent.class);
-                    return (position_in.y == position.y + 1 && position_in.x == position.x);
-                }) == null) {
-            position.y += 1;
-        } else {
-            Random rand = new Random();
-            boolean side = rand.nextBoolean();
-            int cast = side ? 1 : -1;
-            if (this.ecs.findFirstEntityByFilter(
-                    (a_entity_in) -> {
-                        PositionComponent position_in = (PositionComponent) a_entity_in.getFirstComponentOfType(
-                                PositionComponent.class);
-                        return (position_in.y == position.y + 1 && position_in.x == position.x + cast);
-                    }) == null) {
-                position.y += 1;
-                position.x = position.x + cast;
-            }
-        }
-    }
-}
 
 public class CAECS {
     public static void main(String[] args) {
@@ -133,20 +54,28 @@ public class CAECS {
         }
         RenderSystem render = new RenderSystem(ecs, 20);
         ecs.registerSystem(render);
-        PhysicsSystem phys = new PhysicsSystem(ecs);
+        KinematicsSystem phys = new KinematicsSystem(ecs);
         ecs.registerSystem(phys);
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setSize(400, 400);
-        f.add(render.getViewport());
-        f.setVisible(true);
+        try{
+          // MetalLookAndFeel.setCurrentTheme(new OceanTheme());
+          // MetalLookAndFeel.setCurrentTheme(new OceanTheme());
+          // MetalLookAndFeel.setCurrentTheme(new DefaultMetalTheme());
+          UIManager.setLookAndFeel(new MetalLookAndFeel()); 
 
+          // UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+        } catch (Exception e) {
+          System.out.println(e.getMessage());
+        }
+        MainScreen sc = new MainScreen();
+        
+        sc.setupViewport(render.getViewport());
+        sc.showWindow();        
         while (true) {
             render.clearViewPort();
             ecs.run();
             // System.out.println("====");
             try {
-                Thread.sleep(200);
+                Thread.sleep(16);
             } catch (Exception e) {
             }
             ;
