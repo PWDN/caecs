@@ -7,6 +7,9 @@ import javax.swing.plaf.metal.OceanTheme;
 
 import java.lang.Thread;
 import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
@@ -16,9 +19,8 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.IronComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.SandComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems.KinematicsSystem;
-import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems.RenderSystem;
 import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.MainScreen;
-import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECSSystem;
+import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.Viewport;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -53,36 +55,43 @@ public class CAECS {
                                     new ColorComponent(new Color(150, 150, 150))
                             }));
         }
-        RenderSystem render = new RenderSystem(ecs, 20);
-        ecs.registerSystem(render);
+        // RenderSystem render = new RenderSystem(ecs, 20);
+
+        // ecs.registerSystem(render);
         KinematicsSystem phys = new KinematicsSystem(ecs);
         ecs.registerSystem(phys);
-        try{
-          // MetalLookAndFeel.setCurrentTheme(new OceanTheme());
-          // MetalLookAndFeel.setCurrentTheme(new OceanTheme());
-          // MetalLookAndFeel.setCurrentTheme(new DefaultMetalTheme());
-          UIManager.setLookAndFeel(new MetalLookAndFeel()); 
+        try {
+            // MetalLookAndFeel.setCurrentTheme(new OceanTheme());
+            // MetalLookAndFeel.setCurrentTheme(new OceanTheme());
+            // MetalLookAndFeel.setCurrentTheme(new DefaultMetalTheme());
+            UIManager.setLookAndFeel(new MetalLookAndFeel());
 
-          // UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
+            // UIManager.setLookAndFeel("com.sun.java.swing.plaf.gtk.GTKLookAndFeel");
         } catch (Exception e) {
-          System.out.println(e.getMessage());
+            System.out.println(e.getMessage());
         }
-    		// EventQueue.invokeLater(() -> {			
-          MainScreen sc = new MainScreen(ecs);
-          sc.setupViewport(render.getViewport());
-          sc.showWindow();
-    		// });		        
-
-                
-        while (true) {
-            render.clearViewPort();
+        Viewport view = new Viewport(ecs);
+        EventQueue.invokeLater(() -> {
+            MainScreen sc = new MainScreen(ecs);
+            sc.setupViewport(view);
+            sc.showWindow();
+        });
+        ScheduledExecutorService executorService;
+        executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(() -> {
             ecs.run();
-            // System.out.println("====");
-            try {
-                Thread.sleep(16);
-            } catch (Exception e) {
-            }
-            ;
-        }
+            view.repaint();
+            System.out.println("XD");
+        }, 0, 33, TimeUnit.MILLISECONDS);
+        // while (true) {
+        // // render.clearViewPort();
+        // ecs.run();
+        // // System.out.println("====");
+        // try {
+        // Thread.sleep(16);
+        // } catch (Exception e) {
+        // }
+        // ;
+        // }
     }
 }

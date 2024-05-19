@@ -9,47 +9,89 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.function.Consumer;
 
+import javax.swing.JPanel;
 
-public class Viewport extends Canvas {
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.AirComponent;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ColorComponent;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
+
+public class Viewport extends JPanel {
     public Consumer<Point> useOnClick;
-    public Viewport() {
+    private final ECS ecs;
+
+    public Viewport(ECS a_ecs) {
         super();
+        this.ecs = a_ecs;
         this.useOnClick = null;
-        createBufferStrategy(1);
         this.setSize(400, 400);
         this.setPreferredSize(new Dimension(400, 400));
         this.setMinimumSize(new Dimension(400, 400));
         this.addMouseMotionListener(new MouseMotionListener() {
             public void mouseDragged(MouseEvent e) {
-                System.out.println(e.getLocationOnScreen().toString());
+                if (useOnClick == null)
+                    return;
+                System.out.println(e.getPoint());
+                System.out.println(useOnClick);
+                Double newX = (double) e.getPoint().x / 20;
+                Double newY = (double) e.getPoint().y / 20;
+                Point newP = new Point((int) Math.round(newX), (int) Math.round(newY));
+                useOnClick.accept(newP);
             }
+
             public void mouseMoved(MouseEvent e) {
             }
         });
         this.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
-                if(useOnClick == null) return;
+                if (useOnClick == null)
+                    return;
                 System.out.println(e.getPoint());
                 System.out.println(useOnClick);
-                Double newX = (double)e.getPoint().x / 20;
-                Double newY = (double)e.getPoint().y / 20;
-                Point newP = new Point((int)Math.round(newX), (int)Math.round(newY));
+                Double newX = (double) e.getPoint().x / 20;
+                Double newY = (double) e.getPoint().y / 20;
+                Point newP = new Point((int) Math.round(newX), (int) Math.round(newY));
                 useOnClick.accept(newP);
             }
-            public void mousePressed(MouseEvent e) {}
-            public void mouseReleased(MouseEvent e) {}
-            public void mouseEntered(MouseEvent e) {}
-            public void mouseExited(MouseEvent e) {}        	
+
+            public void mousePressed(MouseEvent e) {
+            }
+
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            public void mouseExited(MouseEvent e) {
+            }
         });
     }
 
-
-    public void draw() {
+    public void paint(Graphics g) {
+        super.paintComponent(g);
+        for (Entity i : this.ecs.getEntityList()) {
+            if (i.doesEntityHasComponentOfType(AirComponent.class))
+                return;
+            if (!i.doesEntityHasComponentOfType(PositionComponent.class)
+                    || !i.doesEntityHasComponentOfType(ColorComponent.class))
+                return;
+            ColorComponent comp = (ColorComponent) i.getFirstComponentOfType(ColorComponent.class);
+            PositionComponent position = (PositionComponent) i.getFirstComponentOfType(PositionComponent.class);
+            g.setColor(comp.color);
+            g.fillRect(
+                    position.x * 20,
+                    position.y * 20,
+                    20,
+                    20);
+        }
     }
 
-    public Graphics getGraphicsReady() {
-        return this.getBufferStrategy().getDrawGraphics();
-    }
+    // public void draw() {
+    // }
+
+    // public Graphics getGraphicsReady() {
+    // return this.getBufferStrategy().getDrawGraphics();
+    // }
 }
-
-
