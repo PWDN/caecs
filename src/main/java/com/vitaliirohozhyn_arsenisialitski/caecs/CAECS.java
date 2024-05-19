@@ -21,6 +21,7 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.MainScreen;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECSSystem;
 
 import java.awt.Color;
+import java.awt.EventQueue;
 
 public class CAECS {
     public static void main(String[] args) {
@@ -66,10 +67,13 @@ public class CAECS {
         } catch (Exception e) {
           System.out.println(e.getMessage());
         }
-        MainScreen sc = new MainScreen();
-        
-        sc.setupViewport(render.getViewport());
-        sc.showWindow();        
+    		// EventQueue.invokeLater(() -> {			
+          MainScreen sc = new MainScreen(ecs);
+          sc.setupViewport(render.getViewport());
+          sc.showWindow();
+    		// });		        
+
+                
         while (true) {
             render.clearViewPort();
             ecs.run();

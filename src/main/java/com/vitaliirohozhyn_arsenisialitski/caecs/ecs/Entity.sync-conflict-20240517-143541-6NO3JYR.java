@@ -22,9 +22,9 @@ public class Entity {
     }
     return false;
   }
-  public <T extends Component> T getFirstComponentOfType(Class<T> a_class) {
+  public Component getFirstComponentOfType(Class<? extends Component> a_class) {
     for(Component i : this.componentList) {
-      if (a_class == i.getClass()) return (T)i;
+      if (a_class == i.getClass()) return i;
     }
     throw new RuntimeException("Unhandled search of component in entity");
   }

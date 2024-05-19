@@ -2,7 +2,7 @@ package com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
 
-public class TemperatureComponent implements Component {
+class TemperatureComponent implements Component {
     public Integer temperature; // In Kelvins
     public Boolean isOnFire;
 

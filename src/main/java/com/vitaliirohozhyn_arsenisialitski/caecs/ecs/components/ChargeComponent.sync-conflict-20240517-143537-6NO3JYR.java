@@ -2,7 +2,7 @@ package com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
 
-public class ChargeComponent implements Component {
+class ChargeComponent implements Component {
     public Integer charge; // in Culombs(subject to change)
 
     public ChargeComponent(int a_charge) {

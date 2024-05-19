@@ -4,7 +4,7 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
 
 import java.awt.geom.Point2D;
 
-public class MotionComponent implements Component {
+class MotionComponent implements Component {
     public Point2D.Float velocity;
     public Point2D.Float acceleration;
 

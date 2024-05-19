@@ -14,7 +14,6 @@ public class ECS {
     this.systemList.add(a_system);
   }
   public void addEntity(Entity a_entity) {
-    System.out.println(a_entity.toString());
     this.entityList.add(a_entity);
   }
   public void run() {

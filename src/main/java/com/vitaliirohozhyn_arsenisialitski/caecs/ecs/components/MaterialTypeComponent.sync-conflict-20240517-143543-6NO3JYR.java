@@ -4,7 +4,7 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialType;
 
-public class MaterialTypeComponent implements Component {
+class MaterialTypeComponent implements Component {
     public MaterialType materialType;
 
     public MaterialTypeComponent(MaterialType a_materialType) {
