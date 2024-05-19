@@ -81,7 +81,6 @@ public class CAECS {
         executorService.scheduleAtFixedRate(() -> {
             ecs.run();
             view.repaint();
-            System.out.println("XD");
         }, 0, 33, TimeUnit.MILLISECONDS);
         // while (true) {
         // // render.clearViewPort();

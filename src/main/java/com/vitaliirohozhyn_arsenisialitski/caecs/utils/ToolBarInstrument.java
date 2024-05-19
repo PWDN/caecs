@@ -32,6 +32,7 @@ public enum ToolBarInstrument {
                     charge.charge += 1;
                 }
             }),
+
     CHARGEM(
             "Subract charge",
             a_ecs -> a_position -> {
@@ -80,29 +81,56 @@ public enum ToolBarInstrument {
                     temperature.temperature -= 1;
                 }
             }),
+    DELETE(
+            "Delete tile",
+            a_ecs -> a_position -> {
+                Entity tile = getTileAtPosition(a_ecs, a_position);
+                if (tile == null)
+                    return;
+                a_ecs.deleteEntity(tile);
+            }),
     GOLD(
             "Add gold",
             a_ecs -> a_position -> {
-                Entity found = a_ecs.findFirstEntityByFilter(
-                        (a_entity) -> {
-                            PositionComponent position_in = (PositionComponent) a_entity
-                                    .getFirstComponentOfType(PositionComponent.class);
-                            return (position_in.x == a_position.x && a_position.y == position_in.y);
-                        });
-                if (found == null) {
-                    Entity ent = new Entity();
-                    ent.addComponent(new PositionComponent(a_position.x, a_position.y));
-                    ent.addComponent(new TemperatureComponent(300, false));
-                    ent.addComponent(new ChargeComponent(0));
-                    ent.addComponent(new MotionComponent(new Point2D.Float(0, 0), new Point2D.Float(0, 0)));
-                    ent.addComponent(new ColorComponent(Color.BLUE));
-                    ent.addComponent(new MaterialTypeComponent(MaterialType.GOLD));
-                    a_ecs.addEntity(ent);
-                }
+                if (getTileAtPosition(a_ecs, a_position) != null)
+                    return;
+                Entity ent = new Entity();
+                ent.addComponent(new PositionComponent(a_position.x, a_position.y));
+                ent.addComponent(new TemperatureComponent(300, false));
+                ent.addComponent(new ChargeComponent(0));
+                ent.addComponent(new MotionComponent(new Point2D.Float(0, 0), new Point2D.Float(0, 0)));
+                ent.addComponent(new ColorComponent(
+                        Utils.generateRandomColorFromOriginal(Color.YELLOW, 2)));
+                ent.addComponent(new MaterialTypeComponent(MaterialType.GOLD));
+                a_ecs.addEntity(ent);
+            }),
+    AIR(
+            "Add air",
+            a_ecs -> a_position -> {
+                if (getTileAtPosition(a_ecs, a_position) != null)
+                    return;
+                Entity ent = new Entity();
+                ent.addComponent(new PositionComponent(a_position.x, a_position.y));
+                ent.addComponent(new TemperatureComponent(300, false));
+                ent.addComponent(new ChargeComponent(0));
+                ent.addComponent(new MotionComponent(new Point2D.Float(0, 0), new Point2D.Float(0, 0)));
+                ent.addComponent(new ColorComponent(Utils.generateRandomColorFromOriginal(Color.WHITE, 2)));
+                ent.addComponent(new MaterialTypeComponent(MaterialType.AIR));
+                a_ecs.addEntity(ent);
             });
 
     public final String name;
     public final Function<ECS, Consumer<Point>> action;
+
+    private static Entity getTileAtPosition(ECS a_ecs, Point a_position) {
+        Entity found = a_ecs.findFirstEntityByFilter(
+                (a_entity) -> {
+                    PositionComponent position_in = (PositionComponent) a_entity
+                            .getFirstComponentOfType(PositionComponent.class);
+                    return (position_in.x == a_position.x && a_position.y == position_in.y);
+                });
+        return found;
+    }
 
     private ToolBarInstrument(
             String a_name,

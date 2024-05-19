@@ -36,7 +36,7 @@ public class Viewport extends JPanel {
                 System.out.println(useOnClick);
                 Double newX = (double) e.getPoint().x / 20;
                 Double newY = (double) e.getPoint().y / 20;
-                Point newP = new Point((int) Math.round(newX), (int) Math.round(newY));
+                Point newP = new Point((int) Math.floor(newX), (int) Math.floor(newY));
                 useOnClick.accept(newP);
             }
 
@@ -51,7 +51,7 @@ public class Viewport extends JPanel {
                 System.out.println(useOnClick);
                 Double newX = (double) e.getPoint().x / 20;
                 Double newY = (double) e.getPoint().y / 20;
-                Point newP = new Point((int) Math.round(newX), (int) Math.round(newY));
+                Point newP = new Point((int) Math.floor(newX), (int) Math.floor(newY));
                 useOnClick.accept(newP);
             }
 

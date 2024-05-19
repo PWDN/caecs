@@ -17,8 +17,11 @@ public class ECS {
     }
 
     public void addEntity(Entity a_entity) {
-        System.out.println(a_entity.toString());
         this.entityList.add(a_entity);
+    }
+
+    public void deleteEntity(Entity a_entity) {
+        this.entityList.remove(a_entity);
     }
 
     public ArrayList<Entity> getEntityList() {
