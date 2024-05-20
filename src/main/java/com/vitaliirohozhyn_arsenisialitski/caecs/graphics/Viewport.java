@@ -1,6 +1,6 @@
 package com.vitaliirohozhyn_arsenisialitski.caecs.graphics;
 
-import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Point;
@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
-import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.AirComponent;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ChargeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ColorComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
 
@@ -72,14 +72,15 @@ public class Viewport extends JPanel {
     public void paint(Graphics g) {
         super.paintComponent(g);
         for (Entity i : this.ecs.getEntityList()) {
-            if (i.doesEntityHasComponentOfType(AirComponent.class))
-                return;
             if (!i.doesEntityHasComponentOfType(PositionComponent.class)
                     || !i.doesEntityHasComponentOfType(ColorComponent.class))
                 return;
             ColorComponent comp = (ColorComponent) i.getFirstComponentOfType(ColorComponent.class);
             PositionComponent position = (PositionComponent) i.getFirstComponentOfType(PositionComponent.class);
-            g.setColor(comp.color);
+            Color clr = comp.color;
+            ChargeComponent chrg = i.getFirstComponentOfType(ChargeComponent.class);
+            Color clrn = new Color(clr.getRed(), clr.getBlue() + chrg.charge, clr.getGreen());
+            g.setColor(clrn);
             g.fillRect(
                     position.x * 20,
                     position.y * 20,

@@ -14,10 +14,10 @@ import java.util.concurrent.TimeUnit;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ChargeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ColorComponent;
-import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.IronComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
-import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.SandComponent;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems.ChargeSystem;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems.KinematicsSystem;
 import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.MainScreen;
 import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.Viewport;
@@ -28,11 +28,10 @@ import java.awt.EventQueue;
 public class CAECS {
     public static void main(String[] args) {
         ECS ecs = new ECS();
-        for (int i = 1; i <= 5; i++) {
+        /*for (int i = 1; i <= 5; i++) {
             ecs.addEntity(
                     new Entity(
                             new Component[] {
-                                    new SandComponent(),
                                     new PositionComponent(1 + i, 4 + i),
                                     new ColorComponent(new Color(150, 100, 200))
                             }));
@@ -41,7 +40,6 @@ public class CAECS {
             ecs.addEntity(
                     new Entity(
                             new Component[] {
-                                    new SandComponent(),
                                     new PositionComponent(3, 1 + i),
                                     new ColorComponent(new Color(150, 100, 200))
                             }));
@@ -50,14 +48,15 @@ public class CAECS {
             ecs.addEntity(
                     new Entity(
                             new Component[] {
-                                    new IronComponent(),
                                     new PositionComponent(i, 14),
                                     new ColorComponent(new Color(150, 150, 150))
                             }));
-        }
+        }*/
         // RenderSystem render = new RenderSystem(ecs, 20);
 
         // ecs.registerSystem(render);
+        ChargeSystem chrg = new ChargeSystem(ecs);
+        ecs.registerSystem(chrg);
         KinematicsSystem phys = new KinematicsSystem(ecs);
         ecs.registerSystem(phys);
         try {

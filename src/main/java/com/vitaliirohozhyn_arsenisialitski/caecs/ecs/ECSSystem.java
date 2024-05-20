@@ -16,6 +16,6 @@ public abstract class ECSSystem {
     public void onFrameStartBatched(final Entity a_entity[]) {
     }
 
-    public void onFrameEndBatched(final Entity a_entiy[]) {
+    public void onFrameEndBatched(final Entity a_entity[]) {
     }
 }

@@ -1,6 +1,7 @@
 package com.vitaliirohozhyn_arsenisialitski.caecs.ecs;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.function.Predicate;
 
 public class ECS {
@@ -47,5 +48,13 @@ public class ECS {
                 return o;
         }
         return null;
+    }
+    
+    public HashSet<Entity> findEntitiesByFilter(Predicate<Entity> a_filter) {
+        HashSet<Entity> finList = new HashSet<Entity>();
+        for (Entity o: this.entityList) {
+            if (a_filter.test(o)) finList.add(o);
+        }
+        return finList;
     }
 }
