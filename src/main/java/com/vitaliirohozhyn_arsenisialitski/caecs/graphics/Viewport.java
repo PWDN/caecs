@@ -20,21 +20,23 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.utils.Utils;
 
 public class Viewport extends JPanel {
     public Consumer<Point> useOnClick;
-    private final ECS ecs;
+    private final ECS ecs;              //  Defaut:
+    private final int game_size = 400;  //  400
+    private final int pixel_size = 20;  //  20
 
     public Viewport(ECS a_ecs) {
         super();
         this.ecs = a_ecs;
         this.useOnClick = null;
-        this.setSize(400, 400);
-        this.setPreferredSize(new Dimension(400, 400));
-        this.setMinimumSize(new Dimension(400, 400));
+        this.setSize(game_size, game_size);
+        this.setPreferredSize(new Dimension(game_size, game_size));
+        this.setMinimumSize(new Dimension(game_size, game_size));
         this.addMouseMotionListener(new MouseMotionListener() {
             public void mouseDragged(MouseEvent e) {
                 if (useOnClick == null)
                     return;
-                Double newX = (double) e.getPoint().x / 20;
-                Double newY = (double) e.getPoint().y / 20;
+                Double newX = (double) e.getPoint().x / pixel_size;
+                Double newY = (double) e.getPoint().y / pixel_size;
                 Point newP = new Point((int) Math.floor(newX), (int) Math.floor(newY));
                 // new Thread(() -> {
                     useOnClick.accept(newP);
@@ -48,8 +50,8 @@ public class Viewport extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (useOnClick == null)
                     return;
-                Double newX = (double) e.getPoint().x / 20;
-                Double newY = (double) e.getPoint().y / 20;
+                Double newX = (double) e.getPoint().x / pixel_size;
+                Double newY = (double) e.getPoint().y / pixel_size;
                 Point newP = new Point((int) Math.floor(newX), (int) Math.floor(newY));
                 useOnClick.accept(newP);
             }
@@ -84,17 +86,11 @@ public class Viewport extends JPanel {
             Color clrn = new Color(newRed, newGreen, newBlue);
             g.setColor(clrn);
             g.fillRect(
-                    position.x * 20,
-                    position.y * 20,
-                    20,
-                    20);
+                    position.x * pixel_size,
+                    position.y * pixel_size,
+                    pixel_size,
+                    pixel_size);
         }
     }
 
-    // public void draw() {
-    // }
-
-    // public Graphics getGraphicsReady() {
-    // return this.getBufferStrategy().getDrawGraphics();
-    // }
 }
