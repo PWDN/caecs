@@ -19,35 +19,24 @@ public enum ToolBarInstrument {
     CHARGEP(
             "Add charge",
             a_ecs -> a_position -> {
-                Entity found = a_ecs.findFirstEntityByFilter(
-                        (a_entity) -> {
-                            PositionComponent position_in = (PositionComponent) a_entity
-                                    .getFirstComponentOfType(PositionComponent.class);
-                            return (position_in.x == a_position.x && position_in.y == position_in.y);
-                        });
-                if (found != null) {
-                    if (!found.doesEntityHasComponentOfType(ChargeComponent.class))
-                        return;
-                    ChargeComponent charge = found.getFirstComponentOfType(ChargeComponent.class);
-                    charge.charge += 1;
-                }
+                Entity found =  getTileAtPosition(a_ecs, a_position);
+                if (found == null)
+                    return;
+                if (!found.doesEntityHasComponentOfType(ChargeComponent.class))
+                    return;
+                ChargeComponent charge = found.getFirstComponentOfType(ChargeComponent.class);
+                charge.charge += 1;
             }),
-
     CHARGEM(
             "Subract charge",
             a_ecs -> a_position -> {
-                Entity found = a_ecs.findFirstEntityByFilter(
-                        (a_entity) -> {
-                            PositionComponent position_in = (PositionComponent) a_entity
-                                    .getFirstComponentOfType(PositionComponent.class);
-                            return (position_in.x == a_position.x && position_in.y == position_in.y);
-                        });
-                if (found != null) {
-                    if (!found.doesEntityHasComponentOfType(ChargeComponent.class))
-                        return;
-                    ChargeComponent charge = found.getFirstComponentOfType(ChargeComponent.class);
-                    charge.charge -= 1;
-                }
+                Entity found =  getTileAtPosition(a_ecs, a_position);
+                if (found == null)
+                    return;
+                if (!found.doesEntityHasComponentOfType(ChargeComponent.class))
+                    return;
+                ChargeComponent charge = found.getFirstComponentOfType(ChargeComponent.class);
+                charge.charge -= 1;
             }),
     TEMPP(
             "Add thermal energy",

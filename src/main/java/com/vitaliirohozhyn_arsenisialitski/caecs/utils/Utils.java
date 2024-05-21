@@ -28,8 +28,8 @@ public class Utils {
         return rand.nextInt(a_max - a_min + 1) + a_min;
     }
 
-    public static int clamp(int val, int min, int max) {
-        return val > max ? max : val < min ? min : val;
+    public static int clamp(int l, int min, int max) {
+        return l > max ? max : l < min ? min : l;
     }
 
     public static Entity getEntityAtCoordinates(ECS a_ecs, int a_x, int a_y) {

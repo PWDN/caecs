@@ -18,7 +18,11 @@ public class ECS {
     }
 
     public void addEntity(Entity a_entity) {
-        this.entityList.add(a_entity);
+        try {
+            this.entityList.add(a_entity);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     public void deleteEntity(Entity a_entity) {
@@ -34,11 +38,13 @@ public class ECS {
             for (Entity o : this.entityList) {
                 i.onFrameStart(o);
             }
+            i.onFrameStartBatched(this.entityList);
         }
         for (ECSSystem i : this.systemList) {
             for (Entity o : this.entityList) {
                 i.onFrameEnd(o);
             }
+            i.onFrameEndBatched(this.entityList);
         }
     }
 

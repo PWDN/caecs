@@ -16,6 +16,7 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ChargeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ColorComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
+import com.vitaliirohozhyn_arsenisialitski.caecs.utils.Utils;
 
 public class Viewport extends JPanel {
     public Consumer<Point> useOnClick;
@@ -32,8 +33,6 @@ public class Viewport extends JPanel {
             public void mouseDragged(MouseEvent e) {
                 if (useOnClick == null)
                     return;
-                System.out.println(e.getPoint());
-                System.out.println(useOnClick);
                 Double newX = (double) e.getPoint().x / 20;
                 Double newY = (double) e.getPoint().y / 20;
                 Point newP = new Point((int) Math.floor(newX), (int) Math.floor(newY));
@@ -47,8 +46,6 @@ public class Viewport extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 if (useOnClick == null)
                     return;
-                System.out.println(e.getPoint());
-                System.out.println(useOnClick);
                 Double newX = (double) e.getPoint().x / 20;
                 Double newY = (double) e.getPoint().y / 20;
                 Point newP = new Point((int) Math.floor(newX), (int) Math.floor(newY));
@@ -79,7 +76,10 @@ public class Viewport extends JPanel {
             PositionComponent position = (PositionComponent) i.getFirstComponentOfType(PositionComponent.class);
             Color clr = comp.color;
             ChargeComponent chrg = i.getFirstComponentOfType(ChargeComponent.class);
-            Color clrn = new Color(clr.getRed(), clr.getBlue() + chrg.charge, clr.getGreen());
+            int newRed = Utils.clamp((int)(clr.getRed() - (10 * Math.round(chrg.charge))), 0, 255);
+            int newBlue = Utils.clamp((int)(clr.getBlue() + (10 * Math.round(chrg.charge))), 0, 255);
+            int newGreen = Utils.clamp((int)(clr.getGreen() - (10 * Math.round(chrg.charge))), 0, 255);
+            Color clrn = new Color(newRed, newGreen, newBlue);
             g.setColor(clrn);
             g.fillRect(
                     position.x * 20,
