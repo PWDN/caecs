@@ -2,15 +2,22 @@ package com.vitaliirohozhyn_arsenisialitski.caecs.ecs;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 
 public class ECS {
     private final ArrayList<ECSSystem> systemList;
     private final ArrayList<Entity> entityList;
-
+    private final ExecutorService executor;
+    private ArrayList <Callable<Void>> runnables;
     public ECS() {
         this.systemList = new ArrayList<ECSSystem>();
         this.entityList = new ArrayList<Entity>();
+        this.executor = Executors.newFixedThreadPool(15);
+        this.runnables = new ArrayList<Callable<Void>>();
     }
 
     public void registerSystem(ECSSystem a_system) {
@@ -20,6 +27,12 @@ public class ECS {
     public void addEntity(Entity a_entity) {
         try {
             this.entityList.add(a_entity);
+            for (ECSSystem i: this.systemList) {
+                runnables.add(() -> {
+        				    i.onFrameStart(a_entity);
+        				    return null;
+				});
+            }
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -34,18 +47,23 @@ public class ECS {
     }
 
     public void run() {
-        for (ECSSystem i : this.systemList) {
-            for (Entity o : this.entityList) {
-                i.onFrameStart(o);
-            }
-            i.onFrameStartBatched(this.entityList);
+        try{
+            this.executor.invokeAll(this.runnables);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
-        for (ECSSystem i : this.systemList) {
-            for (Entity o : this.entityList) {
-                i.onFrameEnd(o);
-            }
-            i.onFrameEndBatched(this.entityList);
-        }
+        // for (ECSSystem i : this.systemList) {
+            // for (Entity o : this.entityList) {
+                // i.onFrameStart(o);
+            // }
+            // i.onFrameStartBatched(this.entityList);
+        // }
+        // for (ECSSystem i : this.systemList) {
+            // for (Entity o : this.entityList) {
+                // i.onFrameEnd(o);
+            // }
+            // i.onFrameEndBatched(this.entityList);
+        // }
     }
 
     public Entity findFirstEntityByFilter(Predicate<Entity> a_filter) {

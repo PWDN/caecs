@@ -36,7 +36,9 @@ public class Viewport extends JPanel {
                 Double newX = (double) e.getPoint().x / 20;
                 Double newY = (double) e.getPoint().y / 20;
                 Point newP = new Point((int) Math.floor(newX), (int) Math.floor(newY));
-                useOnClick.accept(newP);
+                // new Thread(() -> {
+                    useOnClick.accept(newP);
+                // }).start();
             }
 
             public void mouseMoved(MouseEvent e) {

@@ -23,7 +23,6 @@ public class ChargeSystem extends ECSSystem {
         
         int x_pos = pos.x;
         int y_pos = pos.y;
-        double local_charge = charge.charge;
 
         HashSet<Entity> neighbours = ecs.findEntitiesByFilter((a_entity_in) -> {
             if (a_entity_in.getFirstComponentOfType(MaterialTypeComponent.class).materialType == MaterialType.VACUUM) return false;
@@ -35,26 +34,18 @@ public class ChargeSystem extends ECSSystem {
                 (y_pos - 1 == pos_in.y && x_pos == pos_in.x)
             );
         });
-
         if (neighbours.size() == 0) return;
-        
         Double toGive = 0.0;
+
         for(Entity i: neighbours) {
             ChargeComponent charge_in = i.getFirstComponentOfType(ChargeComponent.class);
-            if (charge_in.charge < local_charge - 10) {
-                toGive += (local_charge - charge_in.charge) / (10);
-            } else {
-                neighbours.remove(i);
+            if(charge_in.charge < charge.charge) {
+                charge_in.charge += (charge.charge - charge_in.charge) / (10);
+                charge.charge -= (charge.charge - charge_in.charge) / (10);
             }
         }
-
-        for(Entity i: neighbours) {
-            ChargeComponent charge_in = i.getFirstComponentOfType(ChargeComponent.class);
-            charge_in.charge += (local_charge - charge_in.charge) / (10);
-            charge.charge -= (local_charge - charge_in.charge) / (10);
-        }
     }
-    public void onFrameEndBatched(final ArrayList<Entity> a_entity) {
-        System.out.println(a_entity.size());
-    }
+    // public void onFrameEndBatched(final ArrayList<Entity> a_entity) {
+        // System.out.println(a_entity.size());
+    // }
 }

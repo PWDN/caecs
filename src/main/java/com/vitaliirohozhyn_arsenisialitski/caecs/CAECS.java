@@ -22,7 +22,7 @@ public class CAECS {
     public static void main(String[] args) {
         ECS ecs = new ECS();
         ChargeSystem chrg = new ChargeSystem(ecs);
-        //ecs.registerSystem(chrg);
+        ecs.registerSystem(chrg);
         KinematicsSystem phys = new KinematicsSystem(ecs);
         ecs.registerSystem(phys);
         try {
@@ -41,11 +41,18 @@ public class CAECS {
             sc.setupViewport(view);
             sc.showWindow();
         });
-        ScheduledExecutorService executorService;
-        executorService = Executors.newSingleThreadScheduledExecutor();
-        executorService.scheduleAtFixedRate(() -> {
-            ecs.run();
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        ScheduledExecutorService gui = Executors.newSingleThreadScheduledExecutor();
+        gui.scheduleAtFixedRate(() -> {
             view.repaint();
-        }, 0, 66, TimeUnit.MILLISECONDS);
+        }, 0, 100, TimeUnit.MILLISECONDS);
+
+        executorService.scheduleAtFixedRate(() -> {
+            long startTime = System.nanoTime();
+            ecs.run();
+            long endTime = System.nanoTime();
+            System.out.println((endTime - startTime)/1000);
+            System.out.println("End");
+        }, 0, 33, TimeUnit.MILLISECONDS);
     }
 }
