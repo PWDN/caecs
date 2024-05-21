@@ -45,7 +45,7 @@ public class CAECS {
         ScheduledExecutorService gui = Executors.newSingleThreadScheduledExecutor();
         gui.scheduleAtFixedRate(() -> {
             view.repaint();
-        }, 0, 100, TimeUnit.MILLISECONDS);
+        }, 0, 16, TimeUnit.MILLISECONDS);
 
         executorService.scheduleAtFixedRate(() -> {
             long startTime = System.nanoTime();

@@ -20,9 +20,9 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.utils.Utils;
 
 public class Viewport extends JPanel {
     public Consumer<Point> useOnClick;
-    private final ECS ecs;              //  Defaut:
-    private final int game_size = 400;  //  400
-    private final int pixel_size = 20;  //  20
+    private final ECS ecs; // Defaut:
+    private final int game_size = 400; // 400
+    private final int pixel_size = 20; // 20
 
     public Viewport(ECS a_ecs) {
         super();
@@ -39,7 +39,7 @@ public class Viewport extends JPanel {
                 Double newY = (double) e.getPoint().y / pixel_size;
                 Point newP = new Point((int) Math.floor(newX), (int) Math.floor(newY));
                 // new Thread(() -> {
-                    useOnClick.accept(newP);
+                useOnClick.accept(newP);
                 // }).start();
             }
 
@@ -79,11 +79,29 @@ public class Viewport extends JPanel {
             ColorComponent comp = (ColorComponent) i.getFirstComponentOfType(ColorComponent.class);
             PositionComponent position = (PositionComponent) i.getFirstComponentOfType(PositionComponent.class);
             Color clr = comp.color;
-            ChargeComponent chrg = i.getFirstComponentOfType(ChargeComponent.class);
-            int newRed = Utils.clamp((int)(clr.getRed() - (10 * Math.round(chrg.charge))), 0, 255);
-            int newBlue = Utils.clamp((int)(clr.getBlue() + (10 * Math.round(chrg.charge))), 0, 255);
-            int newGreen = Utils.clamp((int)(clr.getGreen() - (10 * Math.round(chrg.charge))), 0, 255);
-            Color clrn = new Color(newRed, newGreen, newBlue);
+            Double chrg = i.getFirstComponentOfType(ChargeComponent.class).charge;
+            Color finalColor;
+            if (chrg >= 0.0) {
+                finalColor = new Color(22, 195, 252);
+            } else if (chrg <= 0.0) {
+                finalColor = new Color(188, 188, 188);
+            } else {
+                finalColor = clr;
+            }
+            int roundedChrg = (int) (Math.round(chrg));
+            Color speedColor = new Color(
+                    Utils.clamp(2 * roundedChrg, 0, 255),
+                    Utils.clamp(2 * roundedChrg, 0, 255),
+                    Utils.clamp(8 * roundedChrg, 0, 255));
+            /*
+             * int newRed = Utils.clamp((int) (clr.getRed() - (2 *
+             * Math.round(chrg.charge))), 22, 255);
+             * int newBlue = Utils.clamp((int) (clr.getBlue() + (10 *
+             * Math.round(chrg.charge))), 0, 195);
+             * int newGreen = Utils.clamp((int) (clr.getGreen() + (2 *
+             * Math.round(chrg.charge))), 0, 255);
+             */
+            Color clrn = Utils.moveColorTowards(clr, finalColor, speedColor);
             g.setColor(clrn);
             g.fillRect(
                     position.x * pixel_size,

@@ -32,6 +32,17 @@ public class Utils {
         return l > max ? max : l < min ? min : l;
     }
 
+    public static int moveTowards(int cur, int fin, int spd) {
+        return Math.abs(fin - cur) <= spd ? fin : cur + (int) (Math.signum(fin - cur)) * spd;
+    }
+
+    public static Color moveColorTowards(Color cur, Color fin, Color spd) {
+        return new Color(
+                Utils.clamp(Utils.moveTowards(cur.getRed(), fin.getRed(), spd.getRed()), 0, 255),
+                Utils.clamp(Utils.moveTowards(cur.getGreen(), fin.getGreen(), spd.getGreen()), 0, 255),
+                Utils.clamp(Utils.moveTowards(cur.getBlue(), fin.getBlue(), spd.getBlue()), 0, 255));
+    }
+
     public static Entity getEntityAtCoordinates(ECS a_ecs, int a_x, int a_y) {
         return a_ecs.findFirstEntityByFilter((a_entity) -> {
             PositionComponent pos = a_entity.getFirstComponentOfType(PositionComponent.class);
