@@ -78,6 +78,34 @@ public enum ToolBarInstrument {
                     return;
                 a_ecs.deleteEntity(tile);
             }),
+    WALL(           "Add wall",
+            a_ecs -> a_position -> {
+                if (getTileAtPosition(a_ecs,a_position)!= null)
+                    return;
+            Entity ent = new Entity();
+            ent.addComponent(new PositionComponent(a_position.x, a_position.y));
+            ent.addComponent(new TemperatureComponent(300, false));
+            ent.addComponent(new ChargeComponent(0));
+            ent.addComponent(new MotionComponent(new Point2D.Float(0,0),new Point2D.Float(0,0)));
+            ent.addComponent(new ColorComponent(
+                Utils.generateRandomColorFromOriginal(Color.BLACK, 1)));
+            ent.addComponent(new MaterialTypeComponent(MaterialType.WALL));
+            a_ecs.addEntity(ent);
+            }),
+    WATER(           "Add water",
+            a_ecs -> a_position -> {
+                if (getTileAtPosition(a_ecs,a_position)!= null)
+                    return;
+            Entity ent = new Entity();
+            ent.addComponent(new PositionComponent(a_position.x, a_position.y));
+            ent.addComponent(new TemperatureComponent(300, false));
+            ent.addComponent(new ChargeComponent(0));
+            ent.addComponent(new MotionComponent(new Point2D.Float(0,0),new Point2D.Float(0,0)));
+            ent.addComponent(new ColorComponent(
+                Utils.generateRandomColorFromOriginal(Color.BLUE, 2)));
+            ent.addComponent(new MaterialTypeComponent(MaterialType.WATER));
+            a_ecs.addEntity(ent);
+            }),
     GOLD(
             "Add gold",
             a_ecs -> a_position -> {

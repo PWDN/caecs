@@ -8,7 +8,12 @@ public enum MaterialType {
             0.99949, // https://www.mit.edu/~6.777/matprops/gold.htm
             0.0, // logicznie chyba
             19280.0, // https://www.mit.edu/~6.777/matprops/gold.htm
-            false),
+            false,
+            //2
+            1337,
+            3129,
+            5000
+            ),
     VACUUM(
             "Vacuum",
             0.0,
@@ -16,7 +21,11 @@ public enum MaterialType {
             1.0,
             1.0,
             0.0,
-            false),
+            false,
+            //
+            10,
+            11,
+            9999),
     AIR(
             "Air",
             0.001297,
@@ -24,7 +33,12 @@ public enum MaterialType {
             1.00000037,
             1.00058986,
             1.204,
-            false),
+            false,
+            //
+            15,         // z głowy
+            20,        // z glowy
+            7000       // z glowy
+            ),
      WATER(
             "Water",
             4.138,
@@ -32,7 +46,11 @@ public enum MaterialType {
             0.9999,  
             88,
             1,
-            false
+            false,
+            //
+            273,
+            373,        //K = C + 273
+            1000
             ),
       WALL(
            "Wall",
@@ -41,11 +59,11 @@ public enum MaterialType {
            0,
            0,
            1,
-           false 
+           false, 
         // 1  
-        // 99980
-        // 99990
-        // 99999
+            99980,
+           99990,
+           99999
       );
 
     public final String name;
@@ -59,10 +77,10 @@ public enum MaterialType {
     public final Double density; // ro = g/(m^3) // https://en.wikipedia.org/wiki/Density
     public final Boolean canBeSetOnFire;
     
-    // public protected Integer usualState;  // Zwykły stan materialu   1 - Solid(wall) - 2 - Solid(powder) - 3 - Liquid 4 - Vapor 5 - Plasm (fire)             // ENUM
-    // public final Double meltingPoint;    // Temperatura topnięcia
-    // public final Double boillingPoint;   // Temperatura wrzenia
-    // public final Double selfSparkPoint;  // Temperatura samozapalenia 
+    // public protected Integer usualState; // Zwykły stan materialu   1 - Solid(wall) - 2 - Solid(powder) - 3 - Liquid 4 - Vapor 5 - Plasm (fire)     
+     public final Double meltingPoint;    // Temperatura topnięcia
+     public final Double boillingPoint;   // Temperatura wrzenia
+     public final Double selfSparkPoint;  // Temperatura samozapalenia 
 
 
     private MaterialType(
@@ -72,11 +90,11 @@ public enum MaterialType {
             double a_mu,
             double a_epsilon,
             double a_d,
-            boolean a_cbsof
+            boolean a_cbsof,
             // int a_state
-            // double a_tmelt
-            // double a_tboill
-            // double a_tspark
+            double a_tmelt,
+            double a_tboill,
+            double a_tspark
             ) {
         this.name = a_n;
         this.volumetricHeatCapacity = a_vhc;
@@ -85,5 +103,9 @@ public enum MaterialType {
         this.relativePermittivity = a_epsilon;
         this.density = a_d;
         this.canBeSetOnFire = a_cbsof;
+        //this.usualState = a_state;
+        this.meltingPoint = a_tmelt;
+        this.boillingPoint = a_tboill;
+        this.selfSparkPoint = a_tspark;
     }
 }
