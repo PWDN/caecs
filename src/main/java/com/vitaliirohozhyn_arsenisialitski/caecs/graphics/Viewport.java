@@ -15,6 +15,7 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ChargeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ColorComponent;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialTypeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.Utils;
 
@@ -33,6 +34,7 @@ public class Viewport extends JPanel {
         this.setMinimumSize(new Dimension(game_size, game_size));
         this.addMouseMotionListener(new MouseMotionListener() {
             public void mouseDragged(MouseEvent e) {
+                
                 if (useOnClick == null)
                     return;
                 Double newX = (double) e.getPoint().x / pixel_size;
@@ -74,10 +76,10 @@ public class Viewport extends JPanel {
         super.paintComponent(g);
         for (Entity i : this.ecs.getEntityList()) {
             if (!i.doesEntityHasComponentOfType(PositionComponent.class)
-                    || !i.doesEntityHasComponentOfType(ColorComponent.class))
-                return;
+                    || !i.doesEntityHasComponentOfType(ColorComponent.class))  
+                                   return;         
+            PositionComponent position = (PositionComponent) i.getFirstComponentOfType(PositionComponent.class);                                    
             ColorComponent comp = (ColorComponent) i.getFirstComponentOfType(ColorComponent.class);
-            PositionComponent position = (PositionComponent) i.getFirstComponentOfType(PositionComponent.class);
             Color clr = comp.color;
             ChargeComponent chrg = i.getFirstComponentOfType(ChargeComponent.class);
             int newRed = Utils.clamp((int)(clr.getRed() - (10 * Math.round(chrg.charge))), 0, 255);

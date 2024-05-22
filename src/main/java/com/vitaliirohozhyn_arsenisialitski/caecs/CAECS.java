@@ -15,7 +15,7 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems.KinematicsSystem;
 import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.MainScreen;
 import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.Viewport;
 
-import java.awt.Color;
+
 import java.awt.EventQueue;
 
 public class CAECS {
