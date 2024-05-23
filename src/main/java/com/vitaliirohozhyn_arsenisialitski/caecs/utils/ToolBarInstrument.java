@@ -10,6 +10,7 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ChargeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ColorComponent;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialStateComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialTypeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MotionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
@@ -90,6 +91,7 @@ public enum ToolBarInstrument {
             ent.addComponent(new ColorComponent(
                 Utils.generateRandomColorFromOriginal(Color.BLACK, 1)));
             ent.addComponent(new MaterialTypeComponent(MaterialType.WALL));
+            ent.addComponent(new MaterialStateComponent(MaterialType.WALL.defaultState));
             a_ecs.addEntity(ent);
             }),
     WATER(           "Add water",
@@ -104,6 +106,7 @@ public enum ToolBarInstrument {
             ent.addComponent(new ColorComponent(
                 Utils.generateRandomColorFromOriginal(Color.BLUE, 2)));
             ent.addComponent(new MaterialTypeComponent(MaterialType.WATER));
+            ent.addComponent(new MaterialStateComponent(MaterialType.WATER.defaultState));
             a_ecs.addEntity(ent);
             }),
     GOLD(
@@ -119,6 +122,7 @@ public enum ToolBarInstrument {
                 ent.addComponent(new ColorComponent(
                         Utils.generateRandomColorFromOriginal(Color.YELLOW, 2)));
                 ent.addComponent(new MaterialTypeComponent(MaterialType.GOLD));
+                ent.addComponent(new MaterialStateComponent(MaterialType.GOLD.defaultState));
                 a_ecs.addEntity(ent);
             }),
     AIR(
@@ -133,6 +137,7 @@ public enum ToolBarInstrument {
                 ent.addComponent(new MotionComponent(new Point2D.Float(0, 0), new Point2D.Float(0, 0)));
                 ent.addComponent(new ColorComponent(Utils.generateRandomColorFromOriginal(Color.WHITE, 2)));
                 ent.addComponent(new MaterialTypeComponent(MaterialType.AIR));
+                ent.addComponent(new MaterialStateComponent(MaterialType.AIR.defaultState));
                 a_ecs.addEntity(ent);
             });
 

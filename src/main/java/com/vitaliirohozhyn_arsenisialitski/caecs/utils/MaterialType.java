@@ -9,7 +9,7 @@ public enum MaterialType {
             0.0, // logicznie chyba
             19280.0, // https://www.mit.edu/~6.777/matprops/gold.htm
             false,
-            //2
+            MaterialState.POWDER,
             1337,
             3129,
             5000
@@ -22,7 +22,7 @@ public enum MaterialType {
             1.0,
             0.0,
             false,
-            //
+            MaterialState.VACUUM,
             10,
             11,
             9999),
@@ -34,7 +34,7 @@ public enum MaterialType {
             1.00058986,
             1.204,
             false,
-            //
+            MaterialState.GAS,
             15,         // z głowy
             20,        // z glowy
             7000       // z glowy
@@ -47,7 +47,7 @@ public enum MaterialType {
             88,
             1,
             false,
-            //
+            MaterialState.LIQUID,
             273,
             373,        //K = C + 273
             1000
@@ -60,8 +60,8 @@ public enum MaterialType {
            0,
            1,
            false, 
-        // 1  
-            99980,
+           MaterialState.SOLID,
+           99980,
            99990,
            99999
       );
@@ -76,7 +76,7 @@ public enum MaterialType {
                                               // https://en.wikipedia.org/wiki/Permittivity
     public final Double density; // ro = g/(m^3) // https://en.wikipedia.org/wiki/Density
     public final Boolean canBeSetOnFire;
-    
+    public final MaterialState defaultState;
     // public protected Integer usualState; // Zwykły stan materialu   1 - Solid(wall) - 2 - Solid(powder) - 3 - Liquid 4 - Vapor 5 - Plasm (fire)     
      public final Double meltingPoint;    // Temperatura topnięcia
      public final Double boillingPoint;   // Temperatura wrzenia
@@ -91,7 +91,7 @@ public enum MaterialType {
             double a_epsilon,
             double a_d,
             boolean a_cbsof,
-            // int a_state
+            MaterialState a_state,
             double a_tmelt,
             double a_tboill,
             double a_tspark
@@ -103,7 +103,7 @@ public enum MaterialType {
         this.relativePermittivity = a_epsilon;
         this.density = a_d;
         this.canBeSetOnFire = a_cbsof;
-        //this.usualState = a_state;
+        this.defaultState = a_state;
         this.meltingPoint = a_tmelt;
         this.boillingPoint = a_tboill;
         this.selfSparkPoint = a_tspark;

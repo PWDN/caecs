@@ -7,6 +7,7 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECSSystem;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ChargeComponent;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialStateComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialTypeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialType;
@@ -18,11 +19,12 @@ public class KinematicsSystem extends ECSSystem {
   public void onFrameStart(Entity a_entity) {
     //return;
     MaterialTypeComponent mat = a_entity.getFirstComponentOfType(MaterialTypeComponent.class);
+    MaterialStateComponent st = a_entity.getFirstComponentOfType(MaterialStateComponent.class);
     PositionComponent position = (PositionComponent) a_entity.getFirstComponentOfType(PositionComponent.class);
-    switch (mat.materialType.name) {
-      case "Wall":    
+    switch (st.materialState) {
+      case SOLID:
         break;
-        case "Air": // inversed powder
+      case GAS: // inversed powder
         if (this.ecs.findFirstEntityByFilter(
                 (a_entity_in) -> {
                     PositionComponent position_in = a_entity_in
@@ -45,7 +47,7 @@ public class KinematicsSystem extends ECSSystem {
             }
         }
           break; 
-        case "Water": // dynamic powder
+        case LIQUID: // dynamic powder
             PositionComponent pos = a_entity.getFirstComponentOfType(PositionComponent.class);
             int x_pos = pos.x;
             int y_pos = pos.y;
