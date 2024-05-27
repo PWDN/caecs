@@ -27,6 +27,7 @@ public class KinematicsSystem extends ECSSystem {
         MaterialTypeComponent mat = a_entity.getFirstComponentOfType(MaterialTypeComponent.class);
         MaterialStateComponent st = a_entity.getFirstComponentOfType(MaterialStateComponent.class);
         PositionComponent position = (PositionComponent) a_entity.getFirstComponentOfType(PositionComponent.class);
+        MotionComponent motion = a_entity.getFirstComponentOfType(MotionComponent.class);
         switch (st.materialState) {
             case SOLID:
                 break;
@@ -54,51 +55,62 @@ public class KinematicsSystem extends ECSSystem {
                 }
                 break;
             case LIQUID: // dynamic powder
-                PositionComponent pos = a_entity.getFirstComponentOfType(PositionComponent.class);
-                int x_pos = pos.x;
-                int y_pos = pos.y;
+                // PositionComponent pos =
+                // a_entity.getFirstComponentOfType(PositionComponent.class);
+                // int x_pos = pos.x;
+                // int y_pos = pos.y;
 
-                HashSet<Entity> neighbours = ecs.findEntitiesByFilter((a_entity_in) -> {
-                    if (a_entity_in
-                            .getFirstComponentOfType(MaterialTypeComponent.class).materialType == MaterialType.VACUUM)
-                        return false;
-                    PositionComponent pos_in = a_entity_in.getFirstComponentOfType(PositionComponent.class);
-                    return ((x_pos + 1 == pos_in.x && y_pos == pos_in.y) ||
-                            (x_pos - 1 == pos_in.x && y_pos == pos_in.y) ||
-                            (y_pos + 1 == pos_in.y && x_pos == pos_in.x));
-                });
-                if (neighbours.size() == 3)
-                    break;
-                if (this.ecs.findFirstEntityByFilter(
-                        (a_entity_in) -> {
-                            PositionComponent position_in = a_entity_in
-                                    .getFirstComponentOfType(PositionComponent.class);
-                            return (position_in.y == position.y + 1 && position_in.x == position.x);
-                        }) == null) {
-                    position.y += 1;
-                } else {
-                    // Random rand = new Random();
-                    // boolean side = true; //rand.nextBoolean();
-                    int cast = 1; // side ? 1 : -1;
-                    if (this.ecs.findFirstEntityByFilter(
-                            (a_entity_in) -> {
-                                PositionComponent position_in = a_entity_in.getFirstComponentOfType(
-                                        PositionComponent.class);
-                                return (position_in.y == position.y + 1 && position_in.x == position.x + cast);
-                            }) != null) {
-                        // position.y += 1;
-                        position.x = position.x + cast;
-                    } else if ((this.ecs.findFirstEntityByFilter(
-                            (a_entity_in) -> {
-                                PositionComponent position_in = a_entity_in.getFirstComponentOfType(
-                                        PositionComponent.class);
-                                return (position_in.y == position.y && position_in.x == position.x + cast);
-                            }) == null)) {
-                        position.y += 1;
-                        position.x = position.x + cast;
-
+                // HashSet<Entity> neighbours = ecs.findEntitiesByFilter((a_entity_in) -> {
+                // if (a_entity_in
+                // .getFirstComponentOfType(MaterialTypeComponent.class).materialType ==
+                // MaterialType.VACUUM)
+                // return false;
+                // PositionComponent pos_in =
+                // a_entity_in.getFirstComponentOfType(PositionComponent.class);
+                // return ((x_pos + 1 == pos_in.x && y_pos == pos_in.y) ||
+                // (x_pos - 1 == pos_in.x && y_pos == pos_in.y) ||
+                // (y_pos + 1 == pos_in.y && x_pos == pos_in.x));
+                // });
+                // if (neighbours.size() == 3)
+                // break;
+                // if (this.ecs.findFirstEntityByFilter(
+                // (a_entity_in) -> {
+                // PositionComponent position_in = a_entity_in
+                // .getFirstComponentOfType(PositionComponent.class);
+                // return (position_in.y == position.y + 1 && position_in.x == position.x);
+                // }) == null) {
+                // position.y += 1;
+                // } else {
+                if (Math.abs(motion.velocity.x) <= 0.00003) {
+                    Random randp = new Random();
+                    boolean sidep = randp.nextBoolean();
+                    int castp = sidep ? 1 : -1;
+                    if (Utils.getEntityAtCoordinates(this.ecs, position.x + castp, position.y) == null) {
+                        motion.velocity.x += castp * 2;
+                    } else if (Utils.getEntityAtCoordinates(this.ecs, position.x - castp, position.y) == null) {
+                        motion.velocity.x -= castp * 2;
                     }
                 }
+                // if (this.ecs.findFirstEntityByFilter(
+                // (a_entity_in) -> {
+                // PositionComponent position_in = a_entity_in.getFirstComponentOfType(
+                // PositionComponent.class);
+                // return (position_in.y == position.y + 1 && position_in.x == position.x +
+                // cast);
+                // }) != null) {
+                // // position.y += 1;
+                // position.x = position.x + cast;
+                // } else if ((this.ecs.findFirstEntityByFilter(
+                // (a_entity_in) -> {
+                // PositionComponent position_in = a_entity_in.getFirstComponentOfType(
+                // PositionComponent.class);
+                // return (position_in.y == position.y && position_in.x == position.x + cast);
+                // }) == null)) {
+                // position.y += 1;
+                // position.x = position.x + cast;
+
+                // }
+                // }
                 break;
 
             default: // default powder psychics
@@ -125,7 +137,6 @@ public class KinematicsSystem extends ECSSystem {
                 }
                 break;
         }
-        MotionComponent motion = a_entity.getFirstComponentOfType(MotionComponent.class);
         if (this.ecs.settings.physicsEnabled && mat.materialType != MaterialType.WALL) {
             if (Utils.getEntityAtCoordinates(this.ecs, position.x, position.y + 1) == null) {
                 // motion.acceleration.y += PhysicsConstant.FREEFALLACCELERATION;
@@ -135,7 +146,8 @@ public class KinematicsSystem extends ECSSystem {
                 motion.velocity.y = 0;
             }
         }
-        if (motion.acceleration.x <= 0.001 && motion.acceleration.y <= 0.001)
+        if (motion.acceleration.x <= 0.000000001 && motion.acceleration.y <= 0.000000001 &&
+                motion.velocity.x <= 0.000001 && motion.velocity.y <= 0.00001)
             return;
         // Reacting basing off of current entitiy's velocity and acceleration
         motion.velocity = Utils.vectorSum(motion.velocity,
@@ -167,8 +179,12 @@ public class KinematicsSystem extends ECSSystem {
             vectorOfReduction.x = Math.abs(newPosX) >= Math.abs(newPosY) ? (int) Math.signum(-newPosX) : 0;
             vectorOfReduction.y = Math.abs(newPosY) >= Math.abs(newPosX) ? (int) Math.signum(-newPosY) : 0;
             PositionComponent colPos = forSort.get(0).getFirstComponentOfType(PositionComponent.class);
-            position.x = colPos.x + vectorOfReduction.x;
-            position.y = colPos.y + vectorOfReduction.y;
+            System.out.println(colPos.toString());
+            System.out.println(vectorOfReduction.toString());
+            if (vectorOfReduction.x != 0 || vectorOfReduction.y != 0) {
+                position.x = colPos.x + vectorOfReduction.x;
+                position.y = colPos.y + vectorOfReduction.y;
+            }
         }
         motion.acceleration.x = Utils.clamp(motion.acceleration.x, -PhysicsConstant.MAXACCELERATION.floatValue(),
                 PhysicsConstant.MAXACCELERATION.floatValue());
