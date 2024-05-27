@@ -9,7 +9,7 @@ public enum MaterialType {
             0.0, // logicznie chyba
             19280.0, // https://www.mit.edu/~6.777/matprops/gold.htm
             false,
-            MaterialState.POWDER,
+            MaterialState.SOLID,
             1337,
             3129,
             5000
@@ -25,7 +25,19 @@ public enum MaterialType {
             MaterialState.VACUUM,
             10,
             11,
-            9999),
+            9999), 
+    COPPER(
+            "Copper",
+            3.45,
+            401,
+            0.9994,
+            0.01,//test 
+            8940,
+            false,
+            MaterialState.SOLID,
+            1357,
+            2835,
+            4500),
     AIR(
             "Air",
             0.001297,

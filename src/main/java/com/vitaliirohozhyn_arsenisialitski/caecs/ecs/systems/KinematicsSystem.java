@@ -52,7 +52,6 @@ public class KinematicsSystem extends ECSSystem {
             int x_pos = pos.x;
             int y_pos = pos.y;
 
-
             HashSet<Entity> neighbours = ecs.findEntitiesByFilter((a_entity_in) -> {
             if (a_entity_in.getFirstComponentOfType(MaterialTypeComponent.class).materialType == MaterialType.VACUUM) return false;
             PositionComponent pos_in = a_entity_in.getFirstComponentOfType(PositionComponent.class);

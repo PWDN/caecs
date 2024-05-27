@@ -125,6 +125,22 @@ public enum ToolBarInstrument {
                 ent.addComponent(new MaterialStateComponent(MaterialType.GOLD.defaultState));
                 a_ecs.addEntity(ent);
             }),
+    COPPER(
+                "Add copper",
+                a_ecs -> a_position -> {
+                    if (getTileAtPosition(a_ecs, a_position) != null)
+                        return;
+                    Entity ent = new Entity();
+                    ent.addComponent(new PositionComponent(a_position.x, a_position.y));
+                    ent.addComponent(new TemperatureComponent(300, false));
+                    ent.addComponent(new ChargeComponent(0));
+                    ent.addComponent(new MotionComponent(new Point2D.Float(0, 0), new Point2D.Float(0, 0)));
+                    ent.addComponent(new ColorComponent(
+                            Utils.generateRandomColorFromOriginal(Color.ORANGE, 2)));
+                    ent.addComponent(new MaterialTypeComponent(MaterialType.COPPER));
+                    ent.addComponent(new MaterialStateComponent(MaterialType.GOLD.defaultState));
+                    a_ecs.addEntity(ent);
+                }),            
     AIR(
             "Add air",
             a_ecs -> a_position -> {

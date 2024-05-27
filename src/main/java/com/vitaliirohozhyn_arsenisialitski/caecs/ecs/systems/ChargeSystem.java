@@ -34,14 +34,23 @@ public class ChargeSystem extends ECSSystem {
                 (y_pos - 1 == pos_in.y && x_pos == pos_in.x)
             );
         });
-        if (neighbours.size() == 0) return;
-        Double toGive = 0.0;
+        if (neighbours.size() == 0) return; // pomik: jak można zwiekszyc sprawność przetwarzania potokowego ? 
+                                            // - zrobić mniej ilość odwołań do pamięci (do jedynki)
+                                            // wtedy można zrobić większą szynę, ale to już będzie inna archetyktura
+        //Double toGive = 0.0;
+                                            // wydajność ograniczana jest przez szerokość szyny komunikacji procesora z programą 
 
         for(Entity i: neighbours) {
             ChargeComponent charge_in = i.getFirstComponentOfType(ChargeComponent.class);
-            if(charge_in.charge < charge.charge) {
-                charge_in.charge += (charge.charge - charge_in.charge) / (10);
-                charge.charge -= (charge.charge - charge_in.charge) / (10);
+            MaterialTypeComponent epsilon_in = i.getFirstComponentOfType(MaterialTypeComponent.class);
+            if (epsilon_in.materialType.relativePermittivity <= 1){         // can be optimised
+                if(charge_in.charge < charge.charge) {
+                    charge_in.charge += (charge.charge - charge_in.charge) / (10);
+                    charge.charge -= (charge.charge - charge_in.charge) / (10);
+            }}
+            else{
+                charge_in.charge += (charge.charge - charge_in.charge) / (epsilon_in.materialType.relativePermittivity);    // can be optimised
+                charge.charge -= (charge.charge - charge_in.charge) / (epsilon_in.materialType.relativePermittivity);       // can be optimised
             }
         }
     }
