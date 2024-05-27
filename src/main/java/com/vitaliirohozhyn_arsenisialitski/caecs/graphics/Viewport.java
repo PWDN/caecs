@@ -34,7 +34,7 @@ public class Viewport extends JPanel {
         this.setMinimumSize(new Dimension(game_size, game_size));
         this.addMouseMotionListener(new MouseMotionListener() {
             public void mouseDragged(MouseEvent e) {
-                
+
                 if (useOnClick == null)
                     return;
                 Double newX = (double) e.getPoint().x / pixel_size;
@@ -76,9 +76,9 @@ public class Viewport extends JPanel {
         super.paintComponent(g);
         for (Entity i : this.ecs.getEntityList()) {
             if (!i.doesEntityHasComponentOfType(PositionComponent.class)
-                    || !i.doesEntityHasComponentOfType(ColorComponent.class))  
-                                   return;         
-            PositionComponent position = (PositionComponent) i.getFirstComponentOfType(PositionComponent.class);                                    
+                    || !i.doesEntityHasComponentOfType(ColorComponent.class))
+                return;
+            PositionComponent position = (PositionComponent) i.getFirstComponentOfType(PositionComponent.class);
             ColorComponent comp = (ColorComponent) i.getFirstComponentOfType(ColorComponent.class);
             Color clr = comp.color;
             Double chrg = i.getFirstComponentOfType(ChargeComponent.class).charge;

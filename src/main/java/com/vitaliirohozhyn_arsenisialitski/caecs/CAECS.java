@@ -15,12 +15,12 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems.KinematicsSystem;
 import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.MainScreen;
 import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.Viewport;
 
-
 import java.awt.EventQueue;
 
 public class CAECS {
     public static void main(String[] args) {
-        ECS ecs = new ECS();
+        float simulationSpeed = 30;
+        ECS ecs = new ECS(1000 / simulationSpeed);
         ChargeSystem chrg = new ChargeSystem(ecs);
         ecs.registerSystem(chrg);
         KinematicsSystem phys = new KinematicsSystem(ecs);
@@ -51,8 +51,8 @@ public class CAECS {
             long startTime = System.nanoTime();
             ecs.run();
             long endTime = System.nanoTime();
-            System.out.println((endTime - startTime)/1000);
-            System.out.println("End");
-        }, 0, 33, TimeUnit.MILLISECONDS);
+            // System.out.println((endTime - startTime) / 1000);
+            // System.out.println("End");
+        }, 0, Math.round(1000 / simulationSpeed), TimeUnit.MILLISECONDS);
     }
 }

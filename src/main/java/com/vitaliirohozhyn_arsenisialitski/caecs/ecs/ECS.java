@@ -10,12 +10,17 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 
+import com.vitaliirohozhyn_arsenisialitski.caecs.utils.ToolBarInstrument;
+import com.vitaliirohozhyn_arsenisialitski.caecs.utils.UIAndSimulationSettings;
+
 public class ECS {
     private final ArrayList<ECSSystem> systemList;
     private final ExecutorService executor;
     private HashMap<Entity, ArrayList<Callable<Void>>> entitiesThreadedList;
+    public final UIAndSimulationSettings settings;
 
-    public ECS() {
+    public ECS(float a_timeBetweenIterations) {
+        this.settings = new UIAndSimulationSettings(false, ToolBarInstrument.GOLD, a_timeBetweenIterations);
         this.systemList = new ArrayList<ECSSystem>();
         this.entitiesThreadedList = new HashMap<Entity, ArrayList<Callable<Void>>>();
         this.executor = Executors.newFixedThreadPool(15);
