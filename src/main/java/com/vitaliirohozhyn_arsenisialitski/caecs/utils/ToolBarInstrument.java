@@ -89,7 +89,7 @@ public enum ToolBarInstrument {
             ent.addComponent(new ChargeComponent(0));
             ent.addComponent(new MotionComponent(new Point2D.Float(0,0),new Point2D.Float(0,0)));
             ent.addComponent(new ColorComponent(
-                Utils.generateRandomColorFromOriginal(Color.BLACK, 1)));
+                Utils.generateRandomColorFromOriginal(new Color(21,23,26), 1)));
             ent.addComponent(new MaterialTypeComponent(MaterialType.WALL));
             ent.addComponent(new MaterialStateComponent(MaterialType.WALL.defaultState));
             a_ecs.addEntity(ent);
@@ -138,9 +138,25 @@ public enum ToolBarInstrument {
                     ent.addComponent(new ColorComponent(
                             Utils.generateRandomColorFromOriginal(Color.ORANGE, 2)));
                     ent.addComponent(new MaterialTypeComponent(MaterialType.COPPER));
-                    ent.addComponent(new MaterialStateComponent(MaterialType.GOLD.defaultState));
+                    ent.addComponent(new MaterialStateComponent(MaterialType.COPPER.defaultState));
                     a_ecs.addEntity(ent);
-                }),            
+                }),    
+     WOOD(
+                "Add wood",
+                a_ecs -> a_position -> {
+                    if (getTileAtPosition(a_ecs, a_position) != null)
+                        return;
+                    Entity ent = new Entity();
+                    ent.addComponent(new PositionComponent(a_position.x, a_position.y));
+                    ent.addComponent(new TemperatureComponent(300, false));
+                    ent.addComponent(new ChargeComponent(0));
+                    ent.addComponent(new MotionComponent(new Point2D.Float(0, 0), new Point2D.Float(0, 0))); 
+                    ent.addComponent(new ColorComponent(
+                             Utils.generateRandomColorFromOriginal(new Color(150,75,0), 1)));
+                    ent.addComponent(new MaterialTypeComponent(MaterialType.WOOD));
+                    ent.addComponent(new MaterialStateComponent(MaterialType.WOOD.defaultState));
+                    a_ecs.addEntity(ent);
+                    }),         
     AIR(
             "Add air",
             a_ecs -> a_position -> {

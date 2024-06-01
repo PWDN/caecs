@@ -1,9 +1,9 @@
 package com.vitaliirohozhyn_arsenisialitski.caecs.utils;
 
 public enum MaterialState{
-  SOLID,
+  SOLID,    // kept u waiting huh?
   POWDER,
-  LIQUID,
+  LIQUID,   
   GAS,
   PLASMA,
   VACUUM,

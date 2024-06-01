@@ -20,7 +20,8 @@ public class ChargeSystem extends ECSSystem {
         if(a_entity.getFirstComponentOfType(MaterialTypeComponent.class).materialType == MaterialType.VACUUM ) return;
         PositionComponent pos = a_entity.getFirstComponentOfType(PositionComponent.class);
         ChargeComponent charge = a_entity.getFirstComponentOfType(ChargeComponent.class);
-        
+        MaterialTypeComponent own_sigma = a_entity.getFirstComponentOfType(MaterialTypeComponent.class);
+
         int x_pos = pos.x;
         int y_pos = pos.y;
 
@@ -34,24 +35,21 @@ public class ChargeSystem extends ECSSystem {
                 (y_pos - 1 == pos_in.y && x_pos == pos_in.x)
             );
         });
-        if (neighbours.size() == 0) return; // pomik: jak można zwiekszyc sprawność przetwarzania potokowego ? 
-                                            // - zrobić mniej ilość odwołań do pamięci (do jedynki)
-                                            // wtedy można zrobić większą szynę, ale to już będzie inna archetyktura
-        //Double toGive = 0.0;
-                                            // wydajność ograniczana jest przez szerokość szyny komunikacji procesora z programą 
+        if (neighbours.size() == 0) return; 
 
         for(Entity i: neighbours) {
             ChargeComponent charge_in = i.getFirstComponentOfType(ChargeComponent.class);
-            MaterialTypeComponent epsilon_in = i.getFirstComponentOfType(MaterialTypeComponent.class);
-            if (epsilon_in.materialType.relativePermittivity <= 1){         // can be optimised
-                if(charge_in.charge < charge.charge) {
-                    charge_in.charge += (charge.charge - charge_in.charge) / (10);
-                    charge.charge -= (charge.charge - charge_in.charge) / (10);
-            }}
-            else{
-                charge_in.charge += (charge.charge - charge_in.charge) / (epsilon_in.materialType.relativePermittivity);    // can be optimised
-                charge.charge -= (charge.charge - charge_in.charge) / (epsilon_in.materialType.relativePermittivity);       // can be optimised
+            MaterialTypeComponent sigma_in = i.getFirstComponentOfType(MaterialTypeComponent.class);
+            double gradient_sigma = (sigma_in.materialType.conductivity + own_sigma.materialType.conductivity)*
+                                    (sigma_in.IsConductivityZero() ? 0:1)*
+                                    (own_sigma.IsConductivityZero() ? 0:1)/2;
+            
+            if(gradient_sigma != 0) {
+            charge_in.charge += (charge.charge - charge_in.charge) / gradient_sigma;
+            charge.charge -= (charge.charge - charge_in.charge) / gradient_sigma;
             }
+            else{break;}
+
         }
     }
     // public void onFrameEndBatched(final ArrayList<Entity> a_entity) {

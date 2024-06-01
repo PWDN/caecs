@@ -17,4 +17,10 @@ public class MaterialTypeComponent implements Component {
         build.append(this.materialType.name);
         return build.toString();
     }
+
+    public boolean IsConductivityZero(){
+        if (this.materialType.conductivity == 0) return true;
+        else{return false;}
+    }
+
 }
