@@ -13,6 +13,7 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialStateCom
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialTypeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MotionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
+import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialState;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialType;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.PhysicsConstant;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.Utils;
@@ -55,6 +56,26 @@ public class KinematicsSystem extends ECSSystem {
                 }
                 break;
             case LIQUID: // dynamic powder
+
+                HashSet<Entity> TilesOnLevelBelow = this.ecs.findEntitiesByFilter((a_entity_in) -> {
+                    PositionComponent position_in = a_entity_in.getFirstComponentOfType(PositionComponent.class);
+                    return (position.y + 1 == position_in.y);
+                });
+                PositionComponent lineStart = null;
+                PositionComponent lineEnd = null;
+                for (Entity i : TilesOnLevelBelow) { // finding the borders
+                    MaterialStateComponent matStComp = i.getFirstComponentOfType(MaterialStateComponent.class);
+                    if (matStComp.materialState == MaterialState.LIQUID)
+                        continue;
+                    PositionComponent position_in = i.getFirstComponentOfType(PositionComponent.class);
+                    if (position_in.x < position.x) {
+                        if (lineStart == null) {
+                            lineStart = position_in;
+                            continue;
+                        }
+                        // if (lineStart.x > )
+                    }
+                }
                 // PositionComponent pos =
                 // a_entity.getFirstComponentOfType(PositionComponent.class);
                 // int x_pos = pos.x;
@@ -81,16 +102,6 @@ public class KinematicsSystem extends ECSSystem {
                 // }) == null) {
                 // position.y += 1;
                 // } else {
-                if (Math.abs(motion.velocity.x) <= 0.00003) {
-                    Random randp = new Random();
-                    boolean sidep = randp.nextBoolean();
-                    int castp = sidep ? 1 : -1;
-                    if (Utils.getEntityAtCoordinates(this.ecs, position.x + castp, position.y) == null) {
-                        motion.velocity.x += castp * 2;
-                    } else if (Utils.getEntityAtCoordinates(this.ecs, position.x - castp, position.y) == null) {
-                        motion.velocity.x -= castp * 2;
-                    }
-                }
                 // if (this.ecs.findFirstEntityByFilter(
                 // (a_entity_in) -> {
                 // PositionComponent position_in = a_entity_in.getFirstComponentOfType(
@@ -146,54 +157,68 @@ public class KinematicsSystem extends ECSSystem {
                 motion.velocity.y = 0;
             }
         }
-        if (motion.acceleration.x <= 0.000000001 && motion.acceleration.y <= 0.000000001 &&
-                motion.velocity.x <= 0.000001 && motion.velocity.y <= 0.00001)
-            return;
-        // Reacting basing off of current entitiy's velocity and acceleration
-        motion.velocity = Utils.vectorSum(motion.velocity,
-                Utils.vectorScale(motion.acceleration, this.ecs.settings.timeBetweenIterations));
-        Point2D.Float newpos = Utils.vectorScale(motion.velocity, this.ecs.settings.timeBetweenIterations / 100);
-        int newPosX = Math.round(newpos.x);
-        int newPosY = Math.round(newpos.y);
-        HashSet<java.awt.Point> pointsInTragectory = Utils.drawLine(new java.awt.Point(position.x, position.y),
-                new java.awt.Point(position.x + newPosX, position.y + newPosY));
-        HashSet<Entity> foundEntities = ecs.findEntitiesByFilter((a_entity_in) -> {
-            if (a_entity_in == a_entity)
-                return false;
-            PositionComponent pos_in = a_entity_in.getFirstComponentOfType(PositionComponent.class);
-            return pointsInTragectory.contains(new java.awt.Point(pos_in.x, pos_in.y));
-        });
-        if (foundEntities.size() == 0) {
-            position.x += newPosX;
-            position.y += newPosY;
-        } else {
-            ArrayList<Entity> forSort = new ArrayList<Entity>(foundEntities);
-            Collections.sort(forSort, (elem1, elem2) -> {
-                PositionComponent pos1 = elem1.getFirstComponentOfType(PositionComponent.class);
-                PositionComponent pos2 = elem2.getFirstComponentOfType(PositionComponent.class);
-                double dist1 = Point2D.distance(position.x, position.y, pos1.x, pos1.y);
-                double dist2 = Point2D.distance(position.x, position.y, pos2.x, pos2.y);
-                return dist1 > dist2 ? 1 : -1;
-            });
-            java.awt.Point vectorOfReduction = new java.awt.Point(0, 0);
-            vectorOfReduction.x = Math.abs(newPosX) >= Math.abs(newPosY) ? (int) Math.signum(-newPosX) : 0;
-            vectorOfReduction.y = Math.abs(newPosY) >= Math.abs(newPosX) ? (int) Math.signum(-newPosY) : 0;
-            PositionComponent colPos = forSort.get(0).getFirstComponentOfType(PositionComponent.class);
-            System.out.println(colPos.toString());
-            System.out.println(vectorOfReduction.toString());
-            if (vectorOfReduction.x != 0 || vectorOfReduction.y != 0) {
-                position.x = colPos.x + vectorOfReduction.x;
-                position.y = colPos.y + vectorOfReduction.y;
-            }
-        }
-        motion.acceleration.x = Utils.clamp(motion.acceleration.x, -PhysicsConstant.MAXACCELERATION.floatValue(),
-                PhysicsConstant.MAXACCELERATION.floatValue());
-        motion.acceleration.y = Utils.clamp(motion.acceleration.y, -PhysicsConstant.MAXACCELERATION.floatValue(),
-                PhysicsConstant.MAXACCELERATION.floatValue());
-        motion.velocity.x = Utils.clamp(motion.velocity.x, -PhysicsConstant.MAXSPEED.floatValue(),
-                PhysicsConstant.MAXSPEED.floatValue());
-        motion.velocity.y = Utils.clamp(motion.velocity.y, -PhysicsConstant.MAXSPEED.floatValue(),
-                PhysicsConstant.MAXSPEED.floatValue());
+        // if (motion.acceleration.x <= 0.000000001 && motion.acceleration.y <=
+        // 0.000000001 &&
+        // motion.velocity.x <= 0.000001 && motion.velocity.y <= 0.00001)
+        // return;
+        // // Reacting basing off of current entitiy's velocity and acceleration
+        // motion.velocity = Utils.vectorSum(motion.velocity,
+        // Utils.vectorScale(motion.acceleration,
+        // this.ecs.settings.timeBetweenIterations));
+        // Point2D.Float newpos = Utils.vectorScale(motion.velocity,
+        // this.ecs.settings.timeBetweenIterations / 100);
+        // int newPosX = Math.round(newpos.x);
+        // int newPosY = Math.round(newpos.y);
+        // HashSet<java.awt.Point> pointsInTragectory = Utils.drawLine(new
+        // java.awt.Point(position.x, position.y),
+        // new java.awt.Point(position.x + newPosX, position.y + newPosY));
+        // HashSet<Entity> foundEntities = ecs.findEntitiesByFilter((a_entity_in) -> {
+        // if (a_entity_in == a_entity)
+        // return false;
+        // PositionComponent pos_in =
+        // a_entity_in.getFirstComponentOfType(PositionComponent.class);
+        // return pointsInTragectory.contains(new java.awt.Point(pos_in.x, pos_in.y));
+        // });
+        // if (foundEntities.size() == 0) {
+        // position.x += newPosX;
+        // position.y += newPosY;
+        // } else {
+        // ArrayList<Entity> forSort = new ArrayList<Entity>(foundEntities);
+        // Collections.sort(forSort, (elem1, elem2) -> {
+        // PositionComponent pos1 =
+        // elem1.getFirstComponentOfType(PositionComponent.class);
+        // PositionComponent pos2 =
+        // elem2.getFirstComponentOfType(PositionComponent.class);
+        // double dist1 = Point2D.distance(position.x, position.y, pos1.x, pos1.y);
+        // double dist2 = Point2D.distance(position.x, position.y, pos2.x, pos2.y);
+        // return dist1 > dist2 ? 1 : -1;
+        // });
+        // java.awt.Point vectorOfReduction = new java.awt.Point(0, 0);
+        // vectorOfReduction.x = Math.abs(newPosX) >= Math.abs(newPosY) ? (int)
+        // Math.signum(-newPosX) : 0;
+        // vectorOfReduction.y = Math.abs(newPosY) >= Math.abs(newPosX) ? (int)
+        // Math.signum(-newPosY) : 0;
+        // PositionComponent colPos =
+        // forSort.get(0).getFirstComponentOfType(PositionComponent.class);
+        // System.out.println(colPos.toString());
+        // System.out.println(vectorOfReduction.toString());
+        // if (vectorOfReduction.x != 0 || vectorOfReduction.y != 0) {
+        // position.x = colPos.x + vectorOfReduction.x;
+        // position.y = colPos.y + vectorOfReduction.y;
+        // }
+        // }
+        // motion.acceleration.x = Utils.clamp(motion.acceleration.x,
+        // -PhysicsConstant.MAXACCELERATION.floatValue(),
+        // PhysicsConstant.MAXACCELERATION.floatValue());
+        // motion.acceleration.y = Utils.clamp(motion.acceleration.y,
+        // -PhysicsConstant.MAXACCELERATION.floatValue(),
+        // PhysicsConstant.MAXACCELERATION.floatValue());
+        // motion.velocity.x = Utils.clamp(motion.velocity.x,
+        // -PhysicsConstant.MAXSPEED.floatValue(),
+        // PhysicsConstant.MAXSPEED.floatValue());
+        // motion.velocity.y = Utils.clamp(motion.velocity.y,
+        // -PhysicsConstant.MAXSPEED.floatValue(),
+        // PhysicsConstant.MAXSPEED.floatValue());
         // end
     }
 }
