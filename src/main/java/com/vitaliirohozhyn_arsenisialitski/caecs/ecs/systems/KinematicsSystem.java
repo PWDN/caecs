@@ -3,8 +3,10 @@ package com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECSSystem;
@@ -24,6 +26,9 @@ public class KinematicsSystem extends ECSSystem {
     };
 
     public void onFrameStart(Entity a_entity) {
+        if (!this.ecs.settings.physicsEnabled) {
+            return;
+        }
         // return;
         MaterialTypeComponent mat = a_entity.getFirstComponentOfType(MaterialTypeComponent.class);
         MaterialStateComponent st = a_entity.getFirstComponentOfType(MaterialStateComponent.class);
@@ -56,26 +61,90 @@ public class KinematicsSystem extends ECSSystem {
                 }
                 break;
             case LIQUID: // dynamic powder
+                if (Utils.getEntityAtCoordinates(this.ecs, position.x, position.y + 1) == null) {
+                    position.y += 1;
+                    return;
+                }
+                Integer wallExistsOnSide = 0;
+                Entity wallOnLeft = Utils.getEntityAtCoordinates(this.ecs, position.x - 1, position.y);
+                Entity wallOnRight = Utils.getEntityAtCoordinates(this.ecs, position.x + 1, position.y);
+                if (wallOnLeft != null) {
+                    wallExistsOnSide = -1;
+                }
+                if (wallOnRight != null) {
+                    if (wallExistsOnSide != 0) {
+                        return;
+                    }
+                    wallExistsOnSide = 1;
+                }
+                HashMap<Integer, Integer> borders = Utils.getBordersOfTypeFromCenter(this.ecs, position.x,
+                        position.y + 1);
+                Integer lineStart = borders.get(0);
+                Integer lineEnd = borders.get(1);
+                lineStart = wallExistsOnSide == -1 ? position.x : lineStart;
+                lineEnd = wallExistsOnSide == 1 ? position.x : lineEnd;
+                HashSet<Integer> vacantX = new HashSet<Integer>();
+                final Integer wantedY = position.y + 1;
 
-                HashSet<Entity> TilesOnLevelBelow = this.ecs.findEntitiesByFilter((a_entity_in) -> {
-                    PositionComponent position_in = a_entity_in.getFirstComponentOfType(PositionComponent.class);
-                    return (position.y + 1 == position_in.y);
-                });
-                PositionComponent lineStart = null;
-                PositionComponent lineEnd = null;
-                for (Entity i : TilesOnLevelBelow) { // finding the borders
-                    MaterialStateComponent matStComp = i.getFirstComponentOfType(MaterialStateComponent.class);
-                    if (matStComp.materialState == MaterialState.LIQUID)
-                        continue;
-                    PositionComponent position_in = i.getFirstComponentOfType(PositionComponent.class);
-                    if (position_in.x < position.x) {
-                        if (lineStart == null) {
-                            lineStart = position_in;
+                IntStream.range(lineStart + 1, lineEnd)
+                        .parallel()
+                        .forEach(n -> {
+                            if (Utils.getEntityAtCoordinates(this.ecs, n, wantedY) == null) {
+                                vacantX.add(n);
+                            }
+                        });
+                if (vacantX.size() == 0) {
+                    HashMap<Integer, Integer> borderOnLine = Utils.getBordersOfTypeFromCenter(this.ecs, position.x,
+                            position.y);
+                    final Integer wantedY_in = position.y;
+                    HashSet<Integer> vacantX_in = new HashSet<Integer>();
+                    IntStream.range(borderOnLine.get(0) + 1, borderOnLine.get(1))
+                            .parallel()
+                            .forEach(n -> {
+                                if (Utils.getEntityAtCoordinates(this.ecs, n, wantedY_in) == null) {
+                                    vacantX_in.add(n);
+                                }
+                            });
+                    if (vacantX_in.size() == 0)
+                        return;
+                    Integer nearest = null;
+                    Integer distance = null;
+                    for (Integer i : vacantX_in) {
+                        if (nearest == null) {
+                            nearest = i;
+                            distance = Math.abs(position.x - i);
                             continue;
                         }
-                        // if (lineStart.x > )
+                        Integer newDist = Math.abs(position.x - i);
+                        if (newDist < distance) {
+                            nearest = i;
+                            distance = newDist;
+                            continue;
+                        }
+                    }
+                    if (borderOnLine.get(0) != -1 && borderOnLine.get(1) != 21)
+                        return;
+                    position.x = nearest;
+                    return;
+                }
+                Integer nearest = null;
+                Integer distance = null;
+                for (Integer i : vacantX) {
+                    if (nearest == null) {
+                        nearest = i;
+                        distance = Math.abs(position.x - i);
+                        continue;
+                    }
+                    Integer newDist = Math.abs(position.x - i);
+                    if (newDist < distance) {
+                        nearest = i;
+                        distance = newDist;
+                        continue;
                     }
                 }
+                position.y += 1;
+                position.x = nearest;
+                // System.out.println(vacantX.toString());
                 // PositionComponent pos =
                 // a_entity.getFirstComponentOfType(PositionComponent.class);
                 // int x_pos = pos.x;

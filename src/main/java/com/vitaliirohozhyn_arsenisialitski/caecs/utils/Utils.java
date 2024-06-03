@@ -2,12 +2,15 @@ package com.vitaliirohozhyn_arsenisialitski.caecs.utils;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialStateComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
 
 public class Utils {
@@ -126,5 +129,44 @@ public class Utils {
                 return Utils.drawLineHigh(a_start, a_end);
             }
         }
+    }
+
+    public static HashMap<Integer, Integer> getBordersOfTypeFromCenter(ECS a_ecs, Integer a_center, Integer a_level) {
+        HashMap<Integer, Integer> res = new HashMap<Integer, Integer>();
+        HashSet<Entity> TilesOnLevel = a_ecs.findEntitiesByFilter((a_entity_in) -> {
+            PositionComponent position_in = a_entity_in.getFirstComponentOfType(PositionComponent.class);
+            return (a_level == position_in.y);
+        });
+        ArrayList<Entity> forSort = new ArrayList<Entity>(TilesOnLevel);
+        Collections.sort(forSort, (elem1, elem2) -> {
+            PositionComponent pos1 = elem1.getFirstComponentOfType(PositionComponent.class);
+            PositionComponent pos2 = elem2.getFirstComponentOfType(PositionComponent.class);
+            return pos1.x > pos2.x ? 1 : -1;
+        });
+        Integer lineStart = forSort.get(0).getFirstComponentOfType(PositionComponent.class).x;
+        Integer lineEnd = forSort.get(forSort.size() - 1).getFirstComponentOfType(PositionComponent.class).x;
+        for (Entity i : forSort) { // finding the borders
+            MaterialStateComponent matStComp = i.getFirstComponentOfType(MaterialStateComponent.class);
+            if (matStComp.materialState == MaterialState.LIQUID)
+                continue;
+            PositionComponent position_in = i.getFirstComponentOfType(PositionComponent.class);
+            if (position_in.x < a_center) {
+                if (lineStart < position_in.x) {
+                    lineStart = position_in.x;
+                }
+                continue;
+            }
+            if (position_in.x > a_center) {
+                if (lineEnd > position_in.x) {
+                    lineEnd = position_in.x;
+                }
+                continue;
+            }
+        }
+        lineStart = lineStart == a_center ? -1 : lineStart;
+        lineEnd = lineEnd == a_center ? 21 : lineEnd;
+        res.put(0, lineStart);
+        res.put(1, lineEnd);
+        return res;
     }
 }
