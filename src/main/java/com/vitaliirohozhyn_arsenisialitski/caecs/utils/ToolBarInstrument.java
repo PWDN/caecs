@@ -42,35 +42,28 @@ public enum ToolBarInstrument {
     TEMPP(
             "Add thermal energy",
             a_ecs -> a_position -> {
-                Entity found = a_ecs.findFirstEntityByFilter(
-                        (a_entity) -> {
-                            PositionComponent position_in = (PositionComponent) a_entity
-                                    .getFirstComponentOfType(PositionComponent.class);
-                            return (position_in.x == a_position.x && position_in.y == position_in.y);
-                        });
-                if (found != null) {
-                    if (!found.doesEntityHasComponentOfType(TemperatureComponent.class))
-                        return;
-                    TemperatureComponent temperature = found.getFirstComponentOfType(TemperatureComponent.class);
-                    temperature.temperature += 1;
-                }
+                Entity found =  getTileAtPosition(a_ecs, a_position);
+                if (found == null)
+                    return;
+                if (!found.doesEntityHasComponentOfType(TemperatureComponent.class))
+                    return;
+                TemperatureComponent temperature = found.getFirstComponentOfType(TemperatureComponent.class);
+                System.out.println(temperature.temperature);
+                temperature.temperature += 5;
             }),
     TEMPM(
-            "Subract thermal energy",
-            a_ecs -> a_position -> {
-                Entity found = a_ecs.findFirstEntityByFilter(
-                        (a_entity) -> {
-                            PositionComponent position_in = (PositionComponent) a_entity
-                                    .getFirstComponentOfType(PositionComponent.class);
-                            return (position_in.x == a_position.x && position_in.y == position_in.y);
-                        });
-                if (found != null) {
-                    if (!found.doesEntityHasComponentOfType(TemperatureComponent.class))
-                        return;
-                    TemperatureComponent temperature = found.getFirstComponentOfType(TemperatureComponent.class);
-                    temperature.temperature -= 1;
-                }
-            }),
+        "Substract thermal energy",
+        a_ecs -> a_position -> {
+            Entity found =  getTileAtPosition(a_ecs, a_position);
+            if (found == null)
+                return;
+            if (!found.doesEntityHasComponentOfType(TemperatureComponent.class))
+                return;
+            TemperatureComponent temperature = found.getFirstComponentOfType(TemperatureComponent.class);
+            System.out.println(temperature.temperature);
+            if (temperature.temperature > 6) temperature.temperature -= 5;
+            else return;
+        }),
     DELETE(
             "Delete tile",
             a_ecs -> a_position -> {
