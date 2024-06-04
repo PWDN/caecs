@@ -9,7 +9,7 @@ public enum MaterialType {
             14.4,       //ohm*m * 10^-7 // https://en.wikipedia.org/wiki/Electrical_resistivity_and_conductivity
             19280.0, // https://www.mit.edu/~6.777/matprops/gold.htm
             false,
-            MaterialState.SOLID,
+            MaterialState.POWDER,
             1337,
             3129,
             5000
@@ -34,7 +34,7 @@ public enum MaterialType {
             12.8,       //semi-abstract
             8940,
             false,
-            MaterialState.SOLID,
+            MaterialState.POWDER,
             1357,
             2835,
             4500),
@@ -69,7 +69,7 @@ public enum MaterialType {
             3.7,                      // same as animal tissue https://en.wikipedia.org/wiki/Table_of_specific_heat_capacities
             0.25,                      // 2 times lower than wasser 
             2,                         // logik
-            1000,                   // insulator
+            10000,                   // insulator
             510,                        // pine-tree https://lesorub.ru/sosna
             true,                   
             MaterialState.SOLID,        

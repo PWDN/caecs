@@ -10,17 +10,27 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.JRadioButton;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.ToolBarInstrument;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.UIAndSimulationSettings;
+import com.vitaliirohozhyn_arsenisialitski.caecs.utils.VisionRender;
 
 public class MainScreen {
     private final JFrame frame;
@@ -53,11 +63,34 @@ public class MainScreen {
         c.fill = GridBagConstraints.BOTH;
         JButton btn = new JButton("Change empty pixels to air");
         JCheckBox gravity = new JCheckBox("Enable gravity?", settings.physicsEnabled);
+
+        JRadioButtonMenuItem normal = new JRadioButtonMenuItem("normal",true); 
+        JRadioButtonMenuItem thermal = new JRadioButtonMenuItem("thermal",false);
+        JRadioButtonMenuItem electrical = new JRadioButtonMenuItem("electrical",false);
+        ButtonGroup vision = new ButtonGroup();
+        vision.add(normal); vision.add(electrical); vision.add(thermal);
+        
+        normal.addItemListener((l) -> {
+            if(normal.isSelected()) this.settings.VisionRenders = VisionRender.NORMAL;
+        });
+
+        thermal.addItemListener((l) -> {
+            if(thermal.isSelected()) this.settings.VisionRenders = VisionRender.THERMAL;
+        });
+
+        electrical.addItemListener((l) -> {
+            if(electrical.isSelected()) this.settings.VisionRenders = VisionRender.ELECTRICAL;
+        });
+
+
         gravity.addItemListener((l) -> {
             this.settings.physicsEnabled = gravity.isSelected();
         });
         btn.setBorder(BorderFactory.createLineBorder(Color.BLUE));
         panel.add(btn);
+        panel.add(normal);
+        panel.add(electrical);
+        panel.add(thermal);
         panel.add(Box.createRigidArea(new Dimension(0, 5)));
         panel.add(gravity);
         for (ToolBarInstrument i : ToolBarInstrument.values()) {

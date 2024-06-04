@@ -35,7 +35,7 @@ public class KinematicsSystem extends ECSSystem {
         PositionComponent position = (PositionComponent) a_entity.getFirstComponentOfType(PositionComponent.class);
         MotionComponent motion = a_entity.getFirstComponentOfType(MotionComponent.class);
         switch (st.materialState) {
-            case SOLID:
+            case SOLID:         // METAL GEAR
                 break;
             case GAS: // inversed powder
                 if (this.ecs.findFirstEntityByFilter(

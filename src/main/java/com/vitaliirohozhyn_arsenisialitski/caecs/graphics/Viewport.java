@@ -19,6 +19,8 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialTypeComp
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.Utils;
 
+import com.vitaliirohozhyn_arsenisialitski.caecs.utils.UIAndSimulationSettings;
+
 public class Viewport extends JPanel {
     public Consumer<Point> useOnClick;
     private final ECS ecs;             // Defaut:
@@ -26,7 +28,8 @@ public class Viewport extends JPanel {
     private final int pixel_size = 20; // 20
     private final double over_charge_down = 100.0;
     private final double over_charge_up = 200.0;
-
+    private final UIAndSimulationSettings settings;     
+    
 
     public Viewport(ECS a_ecs) {
         super();
@@ -35,6 +38,7 @@ public class Viewport extends JPanel {
         this.setSize(game_size, game_size);
         this.setPreferredSize(new Dimension(game_size, game_size));
         this.setMinimumSize(new Dimension(game_size, game_size));
+        this.settings = ecs.settings;
         this.addMouseMotionListener(new MouseMotionListener() {
             public void mouseDragged(MouseEvent e) {
 
@@ -84,7 +88,27 @@ public class Viewport extends JPanel {
             PositionComponent position = (PositionComponent) i.getFirstComponentOfType(PositionComponent.class);
             ColorComponent comp = (ColorComponent) i.getFirstComponentOfType(ColorComponent.class);
             Color clr = comp.color;
-            Double chrg = i.getFirstComponentOfType(ChargeComponent.class).charge;
+            
+            /*
+             * int newRed = Utils.clamp((int) (clr.getRed() - (2 *
+             * Math.round(chrg.charge))), 22, 255);
+             * int newBlue = Utils.clamp((int) (clr.getBlue() + (10 *
+             * Math.round(chrg.charge))), 0, 195);
+             * int newGreen = Utils.clamp((int) (clr.getGreen() + (2 *
+             * Math.round(chrg.charge))), 0, 255);
+             */
+            switch (settings.VisionRenders) {
+                case THERMAL:
+                    g.setColor(clr);
+                    g.fillRect(
+                            position.x * pixel_size,
+                            position.y * pixel_size,
+                            pixel_size,
+                            pixel_size);
+                    break;
+                case ELECTRICAL:
+
+                Double chrg = i.getFirstComponentOfType(ChargeComponent.class).charge;
             Color finalColor;
             if (chrg >= 0.0) {
                 finalColor = new Color(22, 195, 252);
@@ -94,46 +118,47 @@ public class Viewport extends JPanel {
                 finalColor = clr;
             }
             int roundedChrg = (int) (Math.round(chrg));
+            
             Color speedColor = new Color(
                     Utils.clamp(2 * roundedChrg, 0, 255),
                     Utils.clamp(2 * roundedChrg, 0, 255),
                     Utils.clamp(8 * roundedChrg, 0, 255));
-            /*
-             * int newRed = Utils.clamp((int) (clr.getRed() - (2 *
-             * Math.round(chrg.charge))), 22, 255);
-             * int newBlue = Utils.clamp((int) (clr.getBlue() + (10 *
-             * Math.round(chrg.charge))), 0, 195);
-             * int newGreen = Utils.clamp((int) (clr.getGreen() + (2 *
-             * Math.round(chrg.charge))), 0, 255);
-             */
-            Color clrn = Utils.moveColorTowards(clr, finalColor, speedColor);
-            g.setColor(clrn);
-            g.fillRect(
-                    position.x * pixel_size,
-                    position.y * pixel_size,
-                    pixel_size,
-                    pixel_size);
-            // System.out.println(clrn);
-            //System.out.println(chrg);
-            
-            if (chrg >= over_charge_down && chrg <= over_charge_up){
-                
-                //Color ovch = Utils.moveColorTowards(clr, finalColor, speedColor);
-                g.setColor(Color.WHITE);
-                g.fillRect(
-                    (int) Math.round(position.x * pixel_size + pixel_size*((over_charge_down)/chrg - 0.5)),
-                    (int) Math.round(position.y * pixel_size + pixel_size*((over_charge_down)/chrg - 0.5)),
-                    (int) Math.round(pixel_size * ((chrg)-over_charge_down)/over_charge_down),
-                    (int) Math.round(pixel_size * ((chrg)-over_charge_down)/over_charge_down));
-            }
-            else if(chrg > over_charge_up){
-                g.setColor(Color.WHITE);
-                g.fillRect(
-                    position.x * pixel_size,
-                    position.y * pixel_size,
-                    pixel_size,
-                    pixel_size);
-            }
+                    Color clrn = Utils.moveColorTowards(clr, finalColor, speedColor);
+                    g.setColor(clrn);
+                    g.fillRect(
+                            position.x * pixel_size,
+                            position.y * pixel_size,
+                            pixel_size,
+                            pixel_size);
+                            if (chrg >= over_charge_down && chrg <= over_charge_up){
+                                //Color ovch = Utils.moveColorTowards(clr, finalColor, speedColor);
+                                g.setColor(Color.WHITE);
+                                g.fillRect(
+                                    (int) Math.round(position.x * pixel_size + pixel_size*((over_charge_down)/chrg - 0.5)),
+                                    (int) Math.round(position.y * pixel_size + pixel_size*((over_charge_down)/chrg - 0.5)),
+                                    (int) Math.round(pixel_size * ((chrg)-over_charge_down)/over_charge_down),
+                                    (int) Math.round(pixel_size * ((chrg)-over_charge_down)/over_charge_down));
+                            }
+                            else if(chrg > over_charge_up){
+                                g.setColor(Color.WHITE);
+                                g.fillRect(
+                                    position.x * pixel_size,
+                                    position.y * pixel_size,
+                                    pixel_size,
+                                    pixel_size);
+                            }
+                    break;
+                default:
+                       g.setColor(clr);
+                       g.fillRect(
+                                position.x * pixel_size,
+                                position.y * pixel_size,
+                                pixel_size,
+                                pixel_size);
+                    break;
+            }            
+
+   
         }
     }
 
