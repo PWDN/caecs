@@ -8,6 +8,7 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.util.Arrays;
 
 import javax.swing.BorderFactory;
 import javax.swing.JRadioButton;
@@ -15,11 +16,13 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -30,7 +33,6 @@ import javax.swing.border.TitledBorder;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.ToolBarInstrument;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.UIAndSimulationSettings;
-import com.vitaliirohozhyn_arsenisialitski.caecs.utils.VisionRender;
 
 public class MainScreen {
     private final JFrame frame;
@@ -64,34 +66,23 @@ public class MainScreen {
         JButton btn = new JButton("Change empty pixels to air");
         JCheckBox gravity = new JCheckBox("Enable gravity?", settings.physicsEnabled);
 
-        JRadioButtonMenuItem normal = new JRadioButtonMenuItem("normal",true); 
-        JRadioButtonMenuItem thermal = new JRadioButtonMenuItem("thermal",false);
-        JRadioButtonMenuItem electrical = new JRadioButtonMenuItem("electrical",false);
-        ButtonGroup vision = new ButtonGroup();
-        vision.add(normal); vision.add(electrical); vision.add(thermal);
-        
-        normal.addItemListener((l) -> {
-            if(normal.isSelected()) this.settings.VisionRenders = VisionRender.NORMAL;
+        RenderMode[] modes = RenderMode.values();
+        String[] mapped = Arrays.stream(modes).map(n -> n.name).toArray(s -> new String[s]);
+        JComboBox<String> selectRenderMode = new JComboBox<String>(mapped);
+        selectRenderMode.setAlignmentX(-selectRenderMode.getPreferredSize().width / 2);
+        selectRenderMode.setBorder(color);
+        selectRenderMode.setSelectedIndex(0);
+        selectRenderMode.addItemListener((l) -> {
+            this.settings.renderMode = modes[selectRenderMode.getSelectedIndex()];
         });
-
-        thermal.addItemListener((l) -> {
-            if(thermal.isSelected()) this.settings.VisionRenders = VisionRender.THERMAL;
-        });
-
-        electrical.addItemListener((l) -> {
-            if(electrical.isSelected()) this.settings.VisionRenders = VisionRender.ELECTRICAL;
-        });
-
-
+        selectRenderMode.setMaximumSize(selectRenderMode.getPreferredSize());
         gravity.addItemListener((l) -> {
             this.settings.physicsEnabled = gravity.isSelected();
         });
         btn.setBorder(BorderFactory.createLineBorder(Color.BLUE));
-        panel.add(btn);
-        panel.add(normal);
-        panel.add(electrical);
-        panel.add(thermal);
-        panel.add(Box.createRigidArea(new Dimension(0, 5)));
+        panel.add(selectRenderMode);
+        // panel.add(btn);
+        // panel.add(Box.createRigidArea(new Dimension(0, 5)));
         panel.add(gravity);
         for (ToolBarInstrument i : ToolBarInstrument.values()) {
             JButton btn_in = new JButton(i.name);
