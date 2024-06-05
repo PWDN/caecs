@@ -1,9 +1,5 @@
 package com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
-import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECSSystem;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ChargeComponent;
@@ -12,17 +8,20 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponen
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.TemperatureComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialType;
 
+import java.util.HashSet;
 
-public class ChargeSystem extends ECSSystem {
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 
-    public ChargeSystem(ECS a_ecs) {
+public class ThermalSystem extends ECSSystem{
+
+    public ThermalSystem(ECS a_ecs){
         super(a_ecs);
     }
     public void onFrameStart(Entity a_entity) {
-        if(a_entity.getFirstComponentOfType(MaterialTypeComponent.class).materialType == MaterialType.VACUUM ) return;
+    if(a_entity.getFirstComponentOfType(MaterialTypeComponent.class).materialType == MaterialType.VACUUM ) return;
         PositionComponent pos = a_entity.getFirstComponentOfType(PositionComponent.class);
-        ChargeComponent charge = a_entity.getFirstComponentOfType(ChargeComponent.class);
-        MaterialTypeComponent own_sigma = a_entity.getFirstComponentOfType(MaterialTypeComponent.class);
+        TemperatureComponent local_temp = a_entity.getFirstComponentOfType(TemperatureComponent.class);
+        MaterialTypeComponent own_props = a_entity.getFirstComponentOfType(MaterialTypeComponent.class);
 
         int x_pos = pos.x;
         int y_pos = pos.y;
@@ -40,26 +39,21 @@ public class ChargeSystem extends ECSSystem {
         if (neighbours.size() == 0) return; 
 
         for(Entity i: neighbours) {
-            ChargeComponent charge_in = i.getFirstComponentOfType(ChargeComponent.class);
             TemperatureComponent temp_in = i.getFirstComponentOfType(TemperatureComponent.class);
-            MaterialTypeComponent sigma_in = i.getFirstComponentOfType(MaterialTypeComponent.class);
-            double gradient_sigma = (sigma_in.materialType.conductivity + own_sigma.materialType.conductivity)*
-                                    (sigma_in.IsConductivityZero() ? 0:1)*
-                                    (own_sigma.IsConductivityZero() ? 0:1)/2;
-            double chargeToGive = (charge.charge - charge_in.charge) / gradient_sigma;
-
+            MaterialTypeComponent props_in = i.getFirstComponentOfType(MaterialTypeComponent.class);
+            double gradient_sigma = (props_in.materialType.thermalConductivity + own_props.materialType.thermalConductivity)*
+                                    (props_in.IsThermConductivityZero() ? 0:1)*
+                                    (own_props.IsThermConductivityZero() ? 0:1)/2;
             
             if(gradient_sigma != 0) {
-            charge_in.charge += chargeToGive;
 
-            temp_in.temperature += Math.abs(chargeToGive*sigma_in.materialType.thermalConductivity/100);
-            charge.charge -= chargeToGive;
-            }
+            temp_in.temperature += ((local_temp.temperature - temp_in.temperature ) / (gradient_sigma/100));
+            local_temp.temperature -= ((local_temp.temperature - temp_in.temperature ) / (gradient_sigma/100));
+            
+            
+        }
             else{break;}
 
         }
-    }
-    // public void onFrameEndBatched(final ArrayList<Entity> a_entity) {
-        // System.out.println(a_entity.size());
-    // }
+}
 }

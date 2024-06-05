@@ -23,4 +23,9 @@ public class MaterialTypeComponent implements Component {
         else{return false;}
     }
 
+    public boolean IsThermConductivityZero(){
+        if (this.materialType.thermalConductivity == 0) return true;
+        else{return false;}
+    }
+
 }

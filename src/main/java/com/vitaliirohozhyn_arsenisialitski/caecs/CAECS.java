@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems.ChargeSystem;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems.KinematicsSystem;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems.ThermalSystem;
 import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.MainScreen;
 import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.Viewport;
 
@@ -25,6 +26,8 @@ public class CAECS {
         ecs.registerSystem(chrg);
         KinematicsSystem phys = new KinematicsSystem(ecs);
         ecs.registerSystem(phys);
+        ThermalSystem therm = new ThermalSystem(ecs);
+        ecs.registerSystem(therm);
         try {
             // MetalLookAndFeel.setCurrentTheme(new OceanTheme());
             // MetalLookAndFeel.setCurrentTheme(new OceanTheme());

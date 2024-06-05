@@ -3,10 +3,10 @@ package com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
 
 public class TemperatureComponent implements Component {
-    public Integer temperature; // In Kelvins
+    public Double temperature; // In Kelvins
     public Boolean isOnFire;
 
-    public TemperatureComponent(int a_temperature, boolean a_isOnFire) {
+    public TemperatureComponent(double a_temperature, boolean a_isOnFire) {
         this.temperature = a_temperature;
         this.isOnFire = a_isOnFire;
     }

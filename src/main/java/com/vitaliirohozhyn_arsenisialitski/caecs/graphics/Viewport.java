@@ -106,7 +106,7 @@ public class Viewport extends JPanel {
                 case THERMAL:
 
                 
-                    int temp = i.getFirstComponentOfType(TemperatureComponent.class).temperature;
+                    double temp = i.getFirstComponentOfType(TemperatureComponent.class).temperature;
 
                     if ((temp >= 0) && (temp < 50)) {
                         finalColor = new Color(0, 0, 0);
@@ -114,7 +114,7 @@ public class Viewport extends JPanel {
                         finalColor = new Color(2, 6,106);
                     } else if ((temp >= 100) && (temp < 150)) {
                         finalColor = new Color(12,17,172);
-                    } else if ((temp >= 150) && (temp < 300)) {
+                    } else if ((temp >= 150) && (temp < 300)) {         // note: Zrobic gradient!11
                         finalColor = new Color(255,0,215);
                     }  else if ((temp >= 300) && (temp < 500)) {
                         finalColor = new Color(255,0,0);
@@ -139,6 +139,7 @@ public class Viewport extends JPanel {
                             position.y * pixel_size,
                             pixel_size,
                             pixel_size);
+
                     break;
                 case ELECTRICAL:
 
