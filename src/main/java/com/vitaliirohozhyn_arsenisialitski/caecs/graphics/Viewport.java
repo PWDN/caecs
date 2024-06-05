@@ -31,8 +31,6 @@ public class Viewport extends JPanel {
     private final double over_charge_up = 200.0;
     private final UIAndSimulationSettings settings;
 
-    //private final int alfa = 255;
-
     public Viewport(ECS a_ecs) {
         super();
         this.ecs = a_ecs;
@@ -49,9 +47,7 @@ public class Viewport extends JPanel {
                 Double newX = (double) e.getPoint().x / pixel_size;
                 Double newY = (double) e.getPoint().y / pixel_size;
                 Point newP = new Point((int) Math.floor(newX), (int) Math.floor(newY));
-                // new Thread(() -> {
                 useOnClick.accept(newP);
-                // }).start();
             }
 
             public void mouseMoved(MouseEvent e) {
@@ -91,49 +87,18 @@ public class Viewport extends JPanel {
             ColorComponent comp = (ColorComponent) i.getFirstComponentOfType(ColorComponent.class);
             Color clr = comp.color;
             Color finalColor = new Color(ABORT);
-            /*
-             * int newRed = Utils.clamp((int) (clr.getRed() - (2 *
-             * Math.round(chrg.charge))), 22, 255);
-             * int newBlue = Utils.clamp((int) (clr.getBlue() + (10 *
-             * Math.round(chrg.charge))), 0, 195);
-             * int newGreen = Utils.clamp((int) (clr.getGreen() + (2 *
-             * Math.round(chrg.charge))), 0, 255);
-             */
             Color speedColor;
             Color clrn;
-
             switch (settings.renderMode) {
                 case THERMAL:
-
-                
                     double temp = i.getFirstComponentOfType(TemperatureComponent.class).temperature;
-
-                    if ((temp >= 0) && (temp < 50)) {
-                        finalColor = new Color(0, 0, 0);
-                    } else if ((temp >= 50) && (temp < 100)) {
-                        finalColor = new Color(2, 6,106);
-                    } else if ((temp >= 100) && (temp < 150)) {
-                        finalColor = new Color(12,17,172);
-                    } else if ((temp >= 150) && (temp < 300)) {         // note: Zrobic gradient!11
-                        finalColor = new Color(255,0,215);
-                    }  else if ((temp >= 300) && (temp < 500)) {
-                        finalColor = new Color(255,0,0);
-                    }  else if ((temp >= 500) && (temp < 700)) {
-                        finalColor = new Color(255,149,0);
-                    }   else if ((temp >= 700) && (temp < 825)){
-                        finalColor = new Color(232,255,0);
-                    }   else if ((temp >= 825)){
-                        finalColor = new Color(255,255,255);
-                    }
-                   
-                //    speedColor = new Color(
-                //         Utils.clamp(2 * (int)Math.log(1+temp), 0, 255),
-                //         Utils.clamp(2 * (int)Math.log(1+temp), 0, 255),
-                //         Utils.clamp(8 * (int)Math.log(1+temp), 0, 255));
-                //     Color clrn = Utils.moveColorTowards(clr, finalColor, speedColor);
-                //     //g.setColor(clrn);
-
-                    g.setColor(finalColor);
+                    int roundedTemp = (int) Math.round(temp - 300f);
+                    speedColor = new Color(
+                            Utils.clamp(8 * roundedTemp, 0, 255),
+                            Utils.clamp(2 * roundedTemp, 0, 255),
+                            Utils.clamp(2 * roundedTemp, 0, 255));
+                    clrn = Utils.moveColorTowards(clr, Color.RED, speedColor);
+                    g.setColor(clrn);
                     g.fillRect(
                             position.x * pixel_size,
                             position.y * pixel_size,
@@ -142,7 +107,6 @@ public class Viewport extends JPanel {
 
                     break;
                 case ELECTRICAL:
-
                     Double chrg = i.getFirstComponentOfType(ChargeComponent.class).charge;
                     if (chrg >= 0.0) {
                         finalColor = new Color(22, 195, 252);
@@ -153,7 +117,7 @@ public class Viewport extends JPanel {
                     }
                     int roundedChrg = (int) (Math.round(chrg));
 
-                   speedColor = new Color(
+                    speedColor = new Color(
                             Utils.clamp(2 * roundedChrg, 0, 255),
                             Utils.clamp(2 * roundedChrg, 0, 255),
                             Utils.clamp(8 * roundedChrg, 0, 255));

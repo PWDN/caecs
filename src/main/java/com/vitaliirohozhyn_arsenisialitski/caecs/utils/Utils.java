@@ -169,4 +169,13 @@ public class Utils {
         res.put(1, lineEnd);
         return res;
     }
+
+    public static Double findDistanceBetweenTwoTiles(PositionComponent a_pos1, PositionComponent a_pos2) {
+        return Math.sqrt(
+                Math.pow(a_pos2.x - a_pos1.x, 2) + Math.pow(a_pos2.y - a_pos1.y, 2));
+    }
+
+    public static Double findDistanceBetweenTwoTileSquared(PositionComponent a_pos1, PositionComponent a_pos2) {
+        return Math.pow(a_pos2.x - a_pos1.x, 2) + Math.pow(a_pos2.y - a_pos1.y, 2);
+    }
 }

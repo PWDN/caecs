@@ -18,14 +18,11 @@ public class MaterialTypeComponent implements Component {
         return build.toString();
     }
 
-    public boolean IsConductivityZero(){
-        if (this.materialType.conductivity == 0) return true;
-        else{return false;}
+    public boolean IsConductivityZero() {
+        return (this.materialType.conductivity == 0);
     }
 
-    public boolean IsThermConductivityZero(){
-        if (this.materialType.thermalConductivity == 0) return true;
-        else{return false;}
+    public boolean IsThermConductivityZero() {
+        return (this.materialType.thermalConductivity == 0);
     }
-
 }

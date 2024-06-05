@@ -24,7 +24,7 @@ public class ECS {
                 RenderMode.NORMAL);
         this.systemList = new ArrayList<ECSSystem>();
         this.entitiesThreadedList = new HashMap<Entity, ArrayList<Callable<Void>>>();
-        this.executor = Executors.newFixedThreadPool(15);
+        this.executor = Executors.newFixedThreadPool(50);
     }
 
     public void registerSystem(ECSSystem a_system) {
