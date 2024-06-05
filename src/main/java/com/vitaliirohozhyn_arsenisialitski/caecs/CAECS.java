@@ -18,10 +18,15 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.Viewport;
 
 import java.awt.EventQueue;
 
+/**
+ * Wejściowa klasa dla pojektu.
+ * Tworzy konfigurację dla silnika, częstotliwości renderu i iterowania przez
+ * symulację.
+ */
 public class CAECS {
     public static void main(String[] args) {
         float simulationSpeed = 30;
-        ECS ecs = new ECS(1000 / simulationSpeed);
+        ECS ecs = new ECS();
         ChargeSystem chrg = new ChargeSystem(ecs);
         ecs.registerSystem(chrg);
         KinematicsSystem phys = new KinematicsSystem(ecs);
@@ -51,11 +56,7 @@ public class CAECS {
         }, 0, 16, TimeUnit.MILLISECONDS);
 
         executorService.scheduleAtFixedRate(() -> {
-            long startTime = System.nanoTime();
             ecs.run();
-            long endTime = System.nanoTime();
-            // System.out.println((endTime - startTime) / 1000);
-            // System.out.println("End");
         }, 0, Math.round(1000 / simulationSpeed), TimeUnit.MILLISECONDS);
     }
 }

@@ -64,7 +64,7 @@ public class MainScreen {
         c.gridheight = 3;
         c.fill = GridBagConstraints.BOTH;
         JButton btn = new JButton("Change empty pixels to air");
-        JCheckBox gravity = new JCheckBox("Enable gravity?", settings.physicsEnabled);
+        JCheckBox gravity = new JCheckBox("Enable gravity?", settings.gravityEnabled);
 
         RenderMode[] modes = RenderMode.values();
         String[] mapped = Arrays.stream(modes).map(n -> n.name).toArray(s -> new String[s]);
@@ -77,12 +77,10 @@ public class MainScreen {
         });
         selectRenderMode.setMaximumSize(selectRenderMode.getPreferredSize());
         gravity.addItemListener((l) -> {
-            this.settings.physicsEnabled = gravity.isSelected();
+            this.settings.gravityEnabled = gravity.isSelected();
         });
         btn.setBorder(BorderFactory.createLineBorder(Color.BLUE));
         panel.add(selectRenderMode);
-        // panel.add(btn);
-        // panel.add(Box.createRigidArea(new Dimension(0, 5)));
         panel.add(gravity);
         for (ToolBarInstrument i : ToolBarInstrument.values()) {
             JButton btn_in = new JButton(i.name);

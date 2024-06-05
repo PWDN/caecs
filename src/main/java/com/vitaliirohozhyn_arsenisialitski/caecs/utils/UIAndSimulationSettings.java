@@ -2,17 +2,26 @@ package com.vitaliirohozhyn_arsenisialitski.caecs.utils;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.RenderMode;
 
+/**
+ * Klasa odpowiadająca za definiowanie ustawień symulacji
+ */
 public class UIAndSimulationSettings {
-    public Boolean physicsEnabled;
+    public Boolean gravityEnabled;
     public ToolBarInstrument selectedInstrument;
-    public Float timeBetweenIterations; // per second
     public RenderMode renderMode;
 
-    public UIAndSimulationSettings(boolean a_physEnabled, ToolBarInstrument a_selectedInstrument,
-            float a_timeBetweenIterations, RenderMode a_renderMode) {
-        this.physicsEnabled = a_physEnabled;
+    /**
+     * Konstruktor klasy
+     *
+     * @param a_gravEnabled        czy domyślnie włączyć symulację grawitacji
+     * @param a_selectedInstrument jaki jest wybrany domyślnie instrument
+     * @param a_renderMode         sposób renderu
+     */
+
+    public UIAndSimulationSettings(boolean a_gravEnabled, ToolBarInstrument a_selectedInstrument,
+            RenderMode a_renderMode) {
+        this.gravityEnabled = a_gravEnabled;
         this.selectedInstrument = a_selectedInstrument;
-        this.timeBetweenIterations = a_timeBetweenIterations;
         this.renderMode = a_renderMode;
     }
 }

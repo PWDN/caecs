@@ -25,7 +25,7 @@ public class KinematicsSystem extends ECSSystem {
     };
 
     public void onFrameStart(Entity a_entity) {
-        if (!this.ecs.settings.physicsEnabled)
+        if (!this.ecs.settings.gravityEnabled)
             return;
         MaterialStateComponent st = a_entity.getFirstComponentOfType(MaterialStateComponent.class);
         PositionComponent position = (PositionComponent) a_entity.getFirstComponentOfType(PositionComponent.class);

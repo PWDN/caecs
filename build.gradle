@@ -7,6 +7,13 @@
 
 plugins {
  id 'application'
+ id 'java'
+}
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+javadoc {
+ destinationDir = file("${buildDir}/docs/javadoc")
 }
 
 application {

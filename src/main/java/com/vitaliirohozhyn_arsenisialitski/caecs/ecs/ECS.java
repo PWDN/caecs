@@ -13,24 +13,42 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.RenderMode;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.ToolBarInstrument;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.UIAndSimulationSettings;
 
+/**
+ * Klasa odpowiadająca za symulację światu
+ */
 public class ECS {
     private final ArrayList<ECSSystem> systemList;
     private final ExecutorService executor;
-    private HashMap<Entity, ArrayList<Callable<Void>>> entitiesThreadedList;
+    private final HashMap<Entity, ArrayList<Callable<Void>>> entitiesThreadedList;
     public final UIAndSimulationSettings settings;
 
-    public ECS(float a_timeBetweenIterations) {
-        this.settings = new UIAndSimulationSettings(false, ToolBarInstrument.GOLD, a_timeBetweenIterations,
-                RenderMode.NORMAL);
+    /**
+     * Konstruktor symulatora
+     */
+    public ECS() {
+        this.settings = new UIAndSimulationSettings(false, ToolBarInstrument.GOLD, RenderMode.NORMAL);
         this.systemList = new ArrayList<ECSSystem>();
         this.entitiesThreadedList = new HashMap<Entity, ArrayList<Callable<Void>>>();
         this.executor = Executors.newFixedThreadPool(50);
     }
 
+    /**
+     * Rejestrowanie systemy w zbiorze system.
+     *
+     * @param a_system
+     */
     public void registerSystem(ECSSystem a_system) {
         this.systemList.add(a_system);
     }
 
+    /**
+     * Dodanie nowego {@link Entity}. Ważne jest ich dodanie po rejestracji
+     * wszystkich
+     * system. Jest to dlatego, że tutaj tworzymy dla każdej nowej systemy Callable,
+     * by móc to zrównołeglić.
+     *
+     * @param a_entity dodawany {@link Entity}
+     */
     public void addEntity(Entity a_entity) {
         ArrayList<Callable<Void>> threadedSystems = new ArrayList<Callable<Void>>();
         for (ECSSystem i : this.systemList) {
@@ -42,14 +60,29 @@ public class ECS {
         this.entitiesThreadedList.put(a_entity, threadedSystems);
     }
 
+    /**
+     * Usuwanie {@link Entity} z listy i jego {@link Callable} obiektami. Możemy to
+     * łatwo zrobić przez to, że chronimy liste({@link ArrayList}) {@link Callable}
+     * jako value w {@link HashMap}, a kluczem jest {@link Entity}.
+     *
+     * @param a_entity usuwany {@link Entity}
+     */
     public void deleteEntity(Entity a_entity) {
         this.entitiesThreadedList.remove(a_entity);
     }
 
+    /**
+     * Zwracanie wszystkich {@link Entity}, które są w symulacji
+     *
+     * @return {@link Set} w którym są {@link Entity}
+     */
     public Set<Entity> getEntityList() {
         return this.entitiesThreadedList.keySet();
     }
 
+    /**
+     * Główna metoda, która liczy następną iterację symulacji.
+     */
     public void run() {
         try {
             HashSet<Callable<Void>> concatThreaded = new HashSet<Callable<Void>>();
@@ -60,20 +93,15 @@ public class ECS {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        // for (ECSSystem i : this.systemList) {
-        // for (Entity o : this.entityList) {
-        // i.onFrameStart(o);
-        // }
-        // i.onFrameStartBatched(this.entityList);
-        // }
-        // for (ECSSystem i : this.systemList) {
-        // for (Entity o : this.entityList) {
-        // i.onFrameEnd(o);
-        // }
-        // i.onFrameEndBatched(this.entityList);
-        // }
     }
 
+    /**
+     * Szukanie pierwszego(!) entity, któryby spełniał warunki, podane przez
+     * {@link Predicate}
+     *
+     * @param a_filter lambda, służąca do filtracji
+     * @return {@link Entity}, przy którym podany {@link Predicate} zwraca True
+     */
     public Entity findFirstEntityByFilter(Predicate<Entity> a_filter) {
         for (Entity o : this.entitiesThreadedList.keySet()) {
             if (a_filter.test(o))
@@ -82,6 +110,13 @@ public class ECS {
         return null;
     }
 
+    /**
+     * To samo, co i findFirstEntityByFilter, tylko szukamy wszystkich
+     * {@link Entity}, przy których {@link Predicate} zwraca True.
+     * 
+     * @param a_filter lambda, służąca do filtracji
+     * @return {@link HashSet} z {@link Entity}, które spełnili podany filtr
+     */
     public HashSet<Entity> findEntitiesByFilter(Predicate<Entity> a_filter) {
         HashSet<Entity> finList = new HashSet<Entity>();
         for (Entity o : this.entitiesThreadedList.keySet()) {

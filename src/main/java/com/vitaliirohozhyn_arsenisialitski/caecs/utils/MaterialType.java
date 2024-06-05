@@ -50,7 +50,7 @@ public enum MaterialType {
             1.204,
             false,
             MaterialState.GAS,
-            15, // z głowy
+            15, // z glowy
             20, // z glowy
             7000, // z glowy
             false),
@@ -99,14 +99,14 @@ public enum MaterialType {
     public final Double volumetricHeatCapacity; // s(T) = J*(K^-1)*(cm^-3) //
                                                 // https://en.wikipedia.org/wiki/Volumetric_heat_capacity
     public final Double thermalConductivity; // k = (W/(m*K)) // https://en.wikipedia.org/wiki/Thermal_conduction
-    public final Double relativePermeability; // względna przenikalność magnetyczna (mu) //
+    public final Double relativePermeability; // wzgledna przenikalnosc magnetyczna (mu) //
                                               // https://en.wikipedia.org/wiki/Permeability_(electromagnetism)
     public final Double conductivity; // rezystywnosc (sigma(ro jes zajente)) /m (tylko abstakcja!!)
                                       // https://en.wikipedia.org/wiki/Electrical_resistivity_and_conductivity
     public final Double density; // ro = kg/(cm^3) // https://en.wikipedia.org/wiki/Density
     public final Boolean canBeSetOnFire;
     public final MaterialState defaultState;
-    public final Double meltingPoint; // Temperatura topnięcia
+    public final Double meltingPoint; // Temperatura topniecia
     public final Double boillingPoint; // Temperatura wrzenia
     public final Double selfSparkPoint; // Temperatura samozapalenia
     public final Boolean magnetic;
