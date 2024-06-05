@@ -3,9 +3,11 @@ package com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECSSystem;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ChargeComponent;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialStateComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialTypeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.TemperatureComponent;
+import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialState;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialType;
 
 import java.util.HashSet;
@@ -22,6 +24,7 @@ public class ThermalSystem extends ECSSystem{
         PositionComponent pos = a_entity.getFirstComponentOfType(PositionComponent.class);
         TemperatureComponent local_temp = a_entity.getFirstComponentOfType(TemperatureComponent.class);
         MaterialTypeComponent own_props = a_entity.getFirstComponentOfType(MaterialTypeComponent.class);
+        MaterialStateComponent own_state = a_entity.getFirstComponentOfType(MaterialStateComponent.class);
 
         int x_pos = pos.x;
         int y_pos = pos.y;
@@ -50,9 +53,17 @@ public class ThermalSystem extends ECSSystem{
             temp_in.temperature += ((local_temp.temperature - temp_in.temperature ) / (gradient_sigma/100));
             local_temp.temperature -= ((local_temp.temperature - temp_in.temperature ) / (gradient_sigma/100));
             
-            
+        
         }
-            else{break;}
+           else{}
+        if(local_temp.temperature < own_props.materialType.meltingPoint){
+            own_state.materialState = MaterialState.SOLID;
+        } else if((local_temp.temperature >= own_props.materialType.meltingPoint) && 
+                  (local_temp.temperature < own_props.materialType.boillingPoint)){
+            own_state.materialState = MaterialState.LIQUID;
+        } else if(local_temp.temperature >= own_props.materialType.boillingPoint){
+            own_state.materialState = MaterialState.GAS;
+        }       // add plasma 
 
         }
 }

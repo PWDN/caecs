@@ -41,7 +41,7 @@ public enum MaterialType {
     AIR(
             "Air",
             0.001297,
-            0.025,
+            1000.025,
             1.00000037,
             100,          //abstract
             1.204,
@@ -54,7 +54,7 @@ public enum MaterialType {
      WATER(
             "Water",
             4.138,
-            0.5918,
+            500.5918,
             0.9999,  
             8,          // semi-abstract
             1,
@@ -66,7 +66,7 @@ public enum MaterialType {
             ),
       WOOD(
             "Wood",                     // Source - trust me bro))
-            3.7,                      // same as animal tissue https://en.wikipedia.org/wiki/Table_of_specific_heat_capacities
+            300.7,                      // same as animal tissue https://en.wikipedia.org/wiki/Table_of_specific_heat_capacities
             0.25,                      // 2 times lower than wasser 
             2,                         // logik
             10000,                   // insulator
