@@ -34,12 +34,19 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.ToolBarInstrument;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.UIAndSimulationSettings;
 
+/**
+* Klasa odpowiadająca za tworzewnie całego interfrejsu użytkownika
+*/
 public class MainScreen {
     private final JFrame frame;
     private Viewport viewport;
     private final UIAndSimulationSettings settings;
     private final ECS ecs;
 
+    /**
+     * Konstruktor, tworzący potrzebne przyciski, handler'y i t.d.
+     * @param a_ecs potrzebny jest do odwolania oraz zmiany ustawień(np. ustalenie aktywnego instrumentu, zmiana trybu renderu)
+    */
     public MainScreen(ECS a_ecs) {
         this.ecs = a_ecs;
         this.settings = a_ecs.settings;
@@ -50,6 +57,9 @@ public class MainScreen {
         this.setupRightBar();
     }
 
+    /**
+    * Inicjalizacja prawego menu. Zawiera ustawienia symulajci oraz wybór instrumentów interakcji z symulacją
+    */
     public void setupRightBar() {
         JPanel panel = new JPanel();
         BoxLayout lay = new BoxLayout(panel, BoxLayout.Y_AXIS);
@@ -95,6 +105,10 @@ public class MainScreen {
         this.frame.add(panel, c);
     }
 
+
+    /**
+    * Inicjalizacja dolnego menu, które jest odpowiedzialnie za eksport i import plików symulacyjnych
+    */
     public void setupBottomBar() {
         JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
@@ -113,6 +127,11 @@ public class MainScreen {
         this.frame.add(panel, c);
     }
 
+
+    /**
+    * Inicjalizacja {@link Viewport} w którym jest realizowany render symulacji
+    * @param a_viewport jest potrzebny, bo tworzymy go w metodzie głównej i musimy go przedać
+    */
     public void setupViewport(Viewport a_viewport) {
         this.viewport = a_viewport;
         JPanel panel = new JPanel();
@@ -126,6 +145,9 @@ public class MainScreen {
         this.frame.add(panel, c);
     }
 
+    /**
+    * Pokazywanie okna po skonfigurowaniu wszystkich jego części
+    */
     public void showWindow() {
         this.frame.setMinimumSize(this.frame.getMinimumSize()); // idk why it works
         this.frame.pack();
