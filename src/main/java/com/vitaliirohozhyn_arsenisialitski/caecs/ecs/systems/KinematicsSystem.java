@@ -13,7 +13,6 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECSSystem;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialStateComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialTypeComponent;
-import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MotionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialState;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialType;

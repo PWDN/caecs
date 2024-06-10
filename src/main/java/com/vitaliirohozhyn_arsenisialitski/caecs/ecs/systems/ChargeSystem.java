@@ -88,8 +88,6 @@ public class ChargeSystem extends ECSSystem {
             Integer deltaY = position_in.y - pos.y;
             Integer deltaPosX = Math.abs(deltaX) >= Math.abs(deltaY) ? (int) Math.signum(-deltaX) : 0;
             Integer deltaPosY = Math.abs(deltaY) >= Math.abs(deltaX) ? (int) Math.signum(-deltaY) : 0;
-            System.out.println(deltaPosX);
-            System.out.println(deltaPosY);
             Boolean entityDoesntExistAtWantedPosition = Utils.getEntityAtCoordinates(this.ecs,
                     position_in.x + deltaPosX, position_in.y + deltaPosY) == null;
             if (entityDoesntExistAtWantedPosition) {

@@ -8,7 +8,13 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.JRadioButton;
@@ -23,30 +29,37 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+import javax.swing.plaf.FileChooserUI;
+
+import org.json.JSONObject;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.ToolBarInstrument;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.UIAndSimulationSettings;
 
 /**
-* Klasa odpowiadająca za tworzewnie całego interfrejsu użytkownika
-*/
+ * Klasa odpowiadająca za tworzewnie całego interfrejsu użytkownika
+ */
 public class MainScreen {
     private final JFrame frame;
     private Viewport viewport;
     private final UIAndSimulationSettings settings;
     private final ECS ecs;
+    private JComboBox<String> selectRenderMode;
 
     /**
      * Konstruktor, tworzący potrzebne przyciski, handler'y i t.d.
-     * @param a_ecs potrzebny jest do odwolania oraz zmiany ustawień(np. ustalenie aktywnego instrumentu, zmiana trybu renderu)
-    */
+     *
+     * @param a_ecs potrzebny jest do odwolania oraz zmiany ustawień(np. ustalenie
+     *              aktywnego instrumentu, zmiana trybu renderu)
+     */
     public MainScreen(ECS a_ecs) {
         this.ecs = a_ecs;
         this.settings = a_ecs.settings;
@@ -58,8 +71,9 @@ public class MainScreen {
     }
 
     /**
-    * Inicjalizacja prawego menu. Zawiera ustawienia symulajci oraz wybór instrumentów interakcji z symulacją
-    */
+     * Inicjalizacja prawego menu. Zawiera ustawienia symulajci oraz wybór
+     * instrumentów interakcji z symulacją
+     */
     public void setupRightBar() {
         JPanel panel = new JPanel();
         BoxLayout lay = new BoxLayout(panel, BoxLayout.Y_AXIS);
@@ -91,6 +105,7 @@ public class MainScreen {
         });
         btn.setBorder(BorderFactory.createLineBorder(Color.BLUE));
         panel.add(selectRenderMode);
+        this.selectRenderMode = selectRenderMode;
         panel.add(gravity);
         for (ToolBarInstrument i : ToolBarInstrument.values()) {
             JButton btn_in = new JButton(i.name);
@@ -105,10 +120,10 @@ public class MainScreen {
         this.frame.add(panel, c);
     }
 
-
     /**
-    * Inicjalizacja dolnego menu, które jest odpowiedzialnie za eksport i import plików symulacyjnych
-    */
+     * Inicjalizacja dolnego menu, które jest odpowiedzialnie za eksport i import
+     * plików symulacyjnych
+     */
     public void setupBottomBar() {
         JPanel panel = new JPanel();
         panel.setBorder(BorderFactory.createLineBorder(Color.BLUE));
@@ -119,7 +134,43 @@ public class MainScreen {
         c.gridheight = 1;
         c.fill = GridBagConstraints.BOTH;
         JButton btns = new JButton("Create save");
+        btns.addActionListener((l) -> {
+            JFileChooser saveFileDialog = new JFileChooser();
+            int rVal = saveFileDialog.showSaveDialog(new JFrame());
+            if (rVal == JFileChooser.APPROVE_OPTION) {
+                File saveFile = new File(saveFileDialog.getSelectedFile().getAbsolutePath() + ".json");
+                try {
+                    saveFile.createNewFile();
+                    FileWriter writer = new FileWriter(saveFile);
+                    writer.write(this.ecs.toJSON().toString());
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         JButton btnl = new JButton("Load save");
+        btnl.addActionListener((l) -> {
+            JFileChooser loadFileDialog = new JFileChooser();
+            int rVal = loadFileDialog.showSaveDialog(new JFrame());
+            if (rVal == JFileChooser.APPROVE_OPTION) {
+                File saveFile = new File(loadFileDialog.getSelectedFile().getAbsolutePath());
+                if (!saveFile.exists() || saveFile.isDirectory())
+                    return;
+                try {
+                    StringBuilder builder = new StringBuilder();
+                    Scanner reader = new Scanner(saveFile);
+                    while (reader.hasNextLine()) {
+                        builder.append(reader.nextLine());
+                    }
+                    reader.close();
+                    this.ecs.fromJSON(new JSONObject(builder.toString()));
+                    this.selectRenderMode.setSelectedIndex(this.ecs.settings.renderMode.ordinal());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         btns.setBorder(BorderFactory.createLineBorder(Color.BLUE));
         btnl.setBorder(BorderFactory.createLineBorder(Color.BLUE));
         panel.add(btns);
@@ -127,11 +178,12 @@ public class MainScreen {
         this.frame.add(panel, c);
     }
 
-
     /**
-    * Inicjalizacja {@link Viewport} w którym jest realizowany render symulacji
-    * @param a_viewport jest potrzebny, bo tworzymy go w metodzie głównej i musimy go przedać
-    */
+     * Inicjalizacja {@link Viewport} w którym jest realizowany render symulacji
+     *
+     * @param a_viewport jest potrzebny, bo tworzymy go w metodzie głównej i musimy
+     *                   go przedać
+     */
     public void setupViewport(Viewport a_viewport) {
         this.viewport = a_viewport;
         JPanel panel = new JPanel();
@@ -146,8 +198,8 @@ public class MainScreen {
     }
 
     /**
-    * Pokazywanie okna po skonfigurowaniu wszystkich jego części
-    */
+     * Pokazywanie okna po skonfigurowaniu wszystkich jego części
+     */
     public void showWindow() {
         this.frame.setMinimumSize(this.frame.getMinimumSize()); // idk why it works
         this.frame.pack();

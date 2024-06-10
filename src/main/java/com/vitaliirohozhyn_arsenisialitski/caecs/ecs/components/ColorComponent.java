@@ -4,14 +4,25 @@ import java.awt.Color;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class ColorComponent implements Component {
-  public Color color;
-  public ColorComponent(Color a_color) {
-    this.color = a_color;
-}
-  public void onAdd() {}
-  public void onDelete() {}
-  public String toString() {
-    return this.color.toString();
-  }
+    public Color color;
+
+    public ColorComponent(Color a_color) {
+        this.color = a_color;
+    }
+
+    public ColorComponent(JSONObject a_obj) throws JSONException {
+        this.color = new Color(a_obj.getInt("color"));
+    }
+
+    public String toString() {
+        return this.color.toString();
+    }
+
+    public JSONObject toJSON() {
+        return new JSONObject().put("colorComponent", new JSONObject().put("color", this.color.getRGB()));
+    }
 }

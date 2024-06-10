@@ -1,5 +1,8 @@
 package com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialType;
@@ -9,6 +12,10 @@ public class MaterialTypeComponent implements Component {
 
     public MaterialTypeComponent(MaterialType a_materialType) {
         this.materialType = a_materialType;
+    }
+
+    public MaterialTypeComponent(JSONObject a_obj) throws JSONException {
+        this.materialType = MaterialType.values()[a_obj.getInt("materialType")];
     }
 
     public String toString() {
@@ -24,5 +31,10 @@ public class MaterialTypeComponent implements Component {
 
     public boolean IsThermConductivityZero() {
         return (this.materialType.thermalConductivity == 0);
+    }
+
+    public JSONObject toJSON() {
+        return new JSONObject().put("materialTypeComponent",
+                new JSONObject().put("materialType", this.materialType.ordinal()));
     }
 }

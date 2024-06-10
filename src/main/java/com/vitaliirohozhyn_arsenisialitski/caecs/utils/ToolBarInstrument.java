@@ -12,7 +12,6 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ChargeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ColorComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialStateComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialTypeComponent;
-import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MotionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.TemperatureComponent;
 
@@ -20,7 +19,7 @@ public enum ToolBarInstrument {
     CHARGEP(
             "Add charge",
             a_ecs -> a_position -> {
-                Entity found =  getTileAtPosition(a_ecs, a_position);
+                Entity found = getTileAtPosition(a_ecs, a_position);
                 if (found == null)
                     return;
                 if (!found.doesEntityHasComponentOfType(ChargeComponent.class))
@@ -31,7 +30,7 @@ public enum ToolBarInstrument {
     CHARGEM(
             "Subract charge",
             a_ecs -> a_position -> {
-                Entity found =  getTileAtPosition(a_ecs, a_position);
+                Entity found = getTileAtPosition(a_ecs, a_position);
                 if (found == null)
                     return;
                 if (!found.doesEntityHasComponentOfType(ChargeComponent.class))
@@ -42,7 +41,7 @@ public enum ToolBarInstrument {
     TEMPP(
             "Add thermal energy",
             a_ecs -> a_position -> {
-                Entity found =  getTileAtPosition(a_ecs, a_position);
+                Entity found = getTileAtPosition(a_ecs, a_position);
                 if (found == null)
                     return;
                 if (!found.doesEntityHasComponentOfType(TemperatureComponent.class))
@@ -52,18 +51,20 @@ public enum ToolBarInstrument {
                 temperature.temperature += 5;
             }),
     TEMPM(
-        "Substract thermal energy",
-        a_ecs -> a_position -> {
-            Entity found =  getTileAtPosition(a_ecs, a_position);
-            if (found == null)
-                return;
-            if (!found.doesEntityHasComponentOfType(TemperatureComponent.class))
-                return;
-            TemperatureComponent temperature = found.getFirstComponentOfType(TemperatureComponent.class);
-            System.out.println(temperature.temperature);
-            if (temperature.temperature > 6) temperature.temperature -= 5;
-            else return;
-        }),
+            "Substract thermal energy",
+            a_ecs -> a_position -> {
+                Entity found = getTileAtPosition(a_ecs, a_position);
+                if (found == null)
+                    return;
+                if (!found.doesEntityHasComponentOfType(TemperatureComponent.class))
+                    return;
+                TemperatureComponent temperature = found.getFirstComponentOfType(TemperatureComponent.class);
+                System.out.println(temperature.temperature);
+                if (temperature.temperature > 6)
+                    temperature.temperature -= 5;
+                else
+                    return;
+            }),
     DELETE(
             "Delete tile",
             a_ecs -> a_position -> {
@@ -72,35 +73,33 @@ public enum ToolBarInstrument {
                     return;
                 a_ecs.deleteEntity(tile);
             }),
-    WALL(           "Add wall",
+    WALL("Add wall",
             a_ecs -> a_position -> {
-                if (getTileAtPosition(a_ecs,a_position)!= null)
+                if (getTileAtPosition(a_ecs, a_position) != null)
                     return;
-            Entity ent = new Entity();
-            ent.addComponent(new PositionComponent(a_position.x, a_position.y));
-            ent.addComponent(new TemperatureComponent(300, false));
-            ent.addComponent(new ChargeComponent(0));
-            ent.addComponent(new MotionComponent(new Point2D.Float(0,0),new Point2D.Float(0,0)));
-            ent.addComponent(new ColorComponent(
-                Utils.generateRandomColorFromOriginal(new Color(21,23,26), 1)));
-            ent.addComponent(new MaterialTypeComponent(MaterialType.WALL));
-            ent.addComponent(new MaterialStateComponent(MaterialType.WALL.defaultState));
-            a_ecs.addEntity(ent);
+                Entity ent = new Entity();
+                ent.addComponent(new PositionComponent(a_position.x, a_position.y));
+                ent.addComponent(new TemperatureComponent(300, false));
+                ent.addComponent(new ChargeComponent(0));
+                ent.addComponent(new ColorComponent(
+                        Utils.generateRandomColorFromOriginal(new Color(21, 23, 26), 1)));
+                ent.addComponent(new MaterialTypeComponent(MaterialType.WALL));
+                ent.addComponent(new MaterialStateComponent(MaterialType.WALL.defaultState));
+                a_ecs.addEntity(ent);
             }),
-    WATER(           "Add water",
+    WATER("Add water",
             a_ecs -> a_position -> {
-                if (getTileAtPosition(a_ecs,a_position)!= null)
+                if (getTileAtPosition(a_ecs, a_position) != null)
                     return;
-            Entity ent = new Entity();
-            ent.addComponent(new PositionComponent(a_position.x, a_position.y));
-            ent.addComponent(new TemperatureComponent(300, false));
-            ent.addComponent(new ChargeComponent(0));
-            ent.addComponent(new MotionComponent(new Point2D.Float(0,0),new Point2D.Float(0,0)));
-            ent.addComponent(new ColorComponent(
-                Utils.generateRandomColorFromOriginal(Color.BLUE, 2)));
-            ent.addComponent(new MaterialTypeComponent(MaterialType.WATER));
-            ent.addComponent(new MaterialStateComponent(MaterialType.WATER.defaultState));
-            a_ecs.addEntity(ent);
+                Entity ent = new Entity();
+                ent.addComponent(new PositionComponent(a_position.x, a_position.y));
+                ent.addComponent(new TemperatureComponent(300, false));
+                ent.addComponent(new ChargeComponent(0));
+                ent.addComponent(new ColorComponent(
+                        Utils.generateRandomColorFromOriginal(Color.BLUE, 2)));
+                ent.addComponent(new MaterialTypeComponent(MaterialType.WATER));
+                ent.addComponent(new MaterialStateComponent(MaterialType.WATER.defaultState));
+                a_ecs.addEntity(ent);
             }),
     GOLD(
             "Add gold",
@@ -111,7 +110,6 @@ public enum ToolBarInstrument {
                 ent.addComponent(new PositionComponent(a_position.x, a_position.y));
                 ent.addComponent(new TemperatureComponent(300, false));
                 ent.addComponent(new ChargeComponent(0));
-                ent.addComponent(new MotionComponent(new Point2D.Float(0, 0), new Point2D.Float(0, 0)));
                 ent.addComponent(new ColorComponent(
                         Utils.generateRandomColorFromOriginal(Color.YELLOW, 2)));
                 ent.addComponent(new MaterialTypeComponent(MaterialType.GOLD));
@@ -119,37 +117,35 @@ public enum ToolBarInstrument {
                 a_ecs.addEntity(ent);
             }),
     COPPER(
-                "Add copper",
-                a_ecs -> a_position -> {
-                    if (getTileAtPosition(a_ecs, a_position) != null)
-                        return;
-                    Entity ent = new Entity();
-                    ent.addComponent(new PositionComponent(a_position.x, a_position.y));
-                    ent.addComponent(new TemperatureComponent(300, false));
-                    ent.addComponent(new ChargeComponent(0));
-                    ent.addComponent(new MotionComponent(new Point2D.Float(0, 0), new Point2D.Float(0, 0)));
-                    ent.addComponent(new ColorComponent(
-                            Utils.generateRandomColorFromOriginal(Color.ORANGE, 2)));
-                    ent.addComponent(new MaterialTypeComponent(MaterialType.COPPER));
-                    ent.addComponent(new MaterialStateComponent(MaterialType.COPPER.defaultState));
-                    a_ecs.addEntity(ent);
-                }),    
-     WOOD(
-                "Add wood",
-                a_ecs -> a_position -> {
-                    if (getTileAtPosition(a_ecs, a_position) != null)
-                        return;
-                    Entity ent = new Entity();
-                    ent.addComponent(new PositionComponent(a_position.x, a_position.y));
-                    ent.addComponent(new TemperatureComponent(300, false));
-                    ent.addComponent(new ChargeComponent(0));
-                    ent.addComponent(new MotionComponent(new Point2D.Float(0, 0), new Point2D.Float(0, 0))); 
-                    ent.addComponent(new ColorComponent(
-                             Utils.generateRandomColorFromOriginal(new Color(150,75,0), 1)));
-                    ent.addComponent(new MaterialTypeComponent(MaterialType.WOOD));
-                    ent.addComponent(new MaterialStateComponent(MaterialType.WOOD.defaultState));
-                    a_ecs.addEntity(ent);
-                    }),         
+            "Add copper",
+            a_ecs -> a_position -> {
+                if (getTileAtPosition(a_ecs, a_position) != null)
+                    return;
+                Entity ent = new Entity();
+                ent.addComponent(new PositionComponent(a_position.x, a_position.y));
+                ent.addComponent(new TemperatureComponent(300, false));
+                ent.addComponent(new ChargeComponent(0));
+                ent.addComponent(new ColorComponent(
+                        Utils.generateRandomColorFromOriginal(Color.ORANGE, 2)));
+                ent.addComponent(new MaterialTypeComponent(MaterialType.COPPER));
+                ent.addComponent(new MaterialStateComponent(MaterialType.COPPER.defaultState));
+                a_ecs.addEntity(ent);
+            }),
+    WOOD(
+            "Add wood",
+            a_ecs -> a_position -> {
+                if (getTileAtPosition(a_ecs, a_position) != null)
+                    return;
+                Entity ent = new Entity();
+                ent.addComponent(new PositionComponent(a_position.x, a_position.y));
+                ent.addComponent(new TemperatureComponent(300, false));
+                ent.addComponent(new ChargeComponent(0));
+                ent.addComponent(new ColorComponent(
+                        Utils.generateRandomColorFromOriginal(new Color(150, 75, 0), 1)));
+                ent.addComponent(new MaterialTypeComponent(MaterialType.WOOD));
+                ent.addComponent(new MaterialStateComponent(MaterialType.WOOD.defaultState));
+                a_ecs.addEntity(ent);
+            }),
     AIR(
             "Add air",
             a_ecs -> a_position -> {
@@ -159,7 +155,6 @@ public enum ToolBarInstrument {
                 ent.addComponent(new PositionComponent(a_position.x, a_position.y));
                 ent.addComponent(new TemperatureComponent(300, false));
                 ent.addComponent(new ChargeComponent(0));
-                ent.addComponent(new MotionComponent(new Point2D.Float(0, 0), new Point2D.Float(0, 0)));
                 ent.addComponent(new ColorComponent(Utils.generateRandomColorFromOriginal(Color.WHITE, 2)));
                 ent.addComponent(new MaterialTypeComponent(MaterialType.AIR));
                 ent.addComponent(new MaterialStateComponent(MaterialType.AIR.defaultState));

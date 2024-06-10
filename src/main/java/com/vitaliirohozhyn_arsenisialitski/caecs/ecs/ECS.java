@@ -9,6 +9,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Predicate;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.vitaliirohozhyn_arsenisialitski.caecs.graphics.RenderMode;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.ToolBarInstrument;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.UIAndSimulationSettings;
@@ -21,6 +25,7 @@ public class ECS {
     private final ExecutorService executor;
     private final HashMap<Entity, ArrayList<Callable<Void>>> entitiesThreadedList;
     public final UIAndSimulationSettings settings;
+    private final HashSet<Entity> entityList;
 
     /**
      * Konstruktor symulatora
@@ -30,6 +35,7 @@ public class ECS {
         this.systemList = new ArrayList<ECSSystem>();
         this.entitiesThreadedList = new HashMap<Entity, ArrayList<Callable<Void>>>();
         this.executor = Executors.newFixedThreadPool(50);
+        this.entityList = new HashSet<Entity>();
     }
 
     /**
@@ -45,7 +51,9 @@ public class ECS {
      * Dodanie nowego {@link Entity}. Ważne jest ich dodanie po rejestracji
      * wszystkich
      * system. Jest to dlatego, że tutaj tworzymy dla każdej nowej systemy Callable,
-     * by móc to zrównołeglić.
+     * by móc to zrównołeglić. Oraz dodajemy tutaj tego {@link Entity} do zwykłego
+     * {@link HashSet}. Jest to potrzebne by łatwo go potem zserializować do
+     * {@link JSONArray} jego komponentów.
      *
      * @param a_entity dodawany {@link Entity}
      */
@@ -57,6 +65,7 @@ public class ECS {
                 return null;
             });
         }
+        this.entityList.add(a_entity);
         this.entitiesThreadedList.put(a_entity, threadedSystems);
     }
 
@@ -113,7 +122,7 @@ public class ECS {
     /**
      * To samo, co i findFirstEntityByFilter, tylko szukamy wszystkich
      * {@link Entity}, przy których {@link Predicate} zwraca True.
-     * 
+     *
      * @param a_filter lambda, służąca do filtracji
      * @return {@link HashSet} z {@link Entity}, które spełnili podany filtr
      */
@@ -124,5 +133,37 @@ public class ECS {
                 finList.add(o);
         }
         return finList;
+    }
+
+    public JSONObject toJSON() {
+        JSONObject res = new JSONObject();
+        JSONArray entities = new JSONArray();
+        for (Entity i : this.entityList) {
+            entities.put(i.toJSON());
+        }
+        res.put("entities", entities);
+        res.put("settings", this.settings.toJSON());
+        return res;
+    }
+
+    public void fromJSON(JSONObject save) throws JSONException {
+        this.entityList.clear();
+        this.entitiesThreadedList.clear();
+        for (String key : save.keySet()) {
+            switch (key) {
+                case "settings":
+                    this.settings.fromJSON(save.getJSONObject(key));
+                    break;
+                case "entities":
+                    JSONArray entitiesToCreate = save.getJSONArray(key);
+                    for (Object i : entitiesToCreate) {
+                        JSONArray entityObj = (JSONArray) i;
+                        this.addEntity(new Entity(entityObj));
+                    }
+                    break;
+                default:
+                    throw new JSONException("Unexpected key");
+            }
+        }
     }
 }
