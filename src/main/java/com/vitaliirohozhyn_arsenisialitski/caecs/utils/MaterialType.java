@@ -1,5 +1,8 @@
 package com.vitaliirohozhyn_arsenisialitski.caecs.utils;
 
+/**
+ * Enum do przechowywania wszystkich materiałów w symulacji
+ */
 public enum MaterialType {
     GOLD( // https://en.wikipedia.org/wiki/Gold
             "Gold",

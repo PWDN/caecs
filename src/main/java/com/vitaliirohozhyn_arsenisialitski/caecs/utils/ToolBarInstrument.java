@@ -15,6 +15,9 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialTypeComp
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.TemperatureComponent;
 
+/**
+ * Enum, w którym są przechowywane instrumenty dla interfejsu graficznego
+ */
 public enum ToolBarInstrument {
     CHARGEP(
             "Add charge",

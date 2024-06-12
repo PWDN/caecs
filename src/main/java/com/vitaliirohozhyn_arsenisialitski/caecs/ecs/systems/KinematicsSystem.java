@@ -1,8 +1,5 @@
 package com.vitaliirohozhyn_arsenisialitski.caecs.ecs.systems;
 
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
@@ -12,10 +9,7 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECSSystem;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialStateComponent;
-import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialTypeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
-import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialState;
-import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialType;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.Utils;
 
 public class KinematicsSystem extends ECSSystem {
@@ -23,7 +17,7 @@ public class KinematicsSystem extends ECSSystem {
         super(a_ecs);
     };
 
-    public void onFrameStart(Entity a_entity) {
+    public void run(Entity a_entity) {
         if (!this.ecs.settings.gravityEnabled)
             return;
         MaterialStateComponent st = a_entity.getFirstComponentOfType(MaterialStateComponent.class);
@@ -99,8 +93,9 @@ public class KinematicsSystem extends ECSSystem {
                                     vacantX_in.add(n);
                                 }
                             });
-                    if (vacantX_in.size() == 0)
+                    if (vacantX_in.size() == 0) {
                         return;
+                    }
                     Integer nearest = null;
                     Integer distance = null;
                     for (Integer i : vacantX_in) {
@@ -116,8 +111,18 @@ public class KinematicsSystem extends ECSSystem {
                             continue;
                         }
                     }
-                    if (borderOnLine.get(0) != -1 && borderOnLine.get(1) != 21)
-                        return;
+                    if (borderOnLine.get(0) != -1 && borderOnLine.get(1) != 21) {
+                        Random rand = new Random();
+                        boolean side = rand.nextBoolean();
+                        final int cast = side ? 1 : -1;
+                        if ((wallOnLeft == null && cast == -1) || (wallOnRight == null && cast == 1)) {
+                            position.x += cast;
+                            return;
+                        } else {
+                            position.x -= cast;
+                            return;
+                        }
+                    }
                     position.x = nearest;
                     return;
                 }

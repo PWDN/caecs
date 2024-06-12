@@ -6,6 +6,10 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialState;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Komponent, przechowywujący stan materiału. Stany są zdefiniowane za pomocą
+ * {@link MaterialState}
+ */
 public class MaterialStateComponent implements Component {
     public MaterialState materialState;
 

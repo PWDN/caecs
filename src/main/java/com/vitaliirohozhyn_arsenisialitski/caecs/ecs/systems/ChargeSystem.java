@@ -20,7 +20,7 @@ public class ChargeSystem extends ECSSystem {
         super(a_ecs);
     }
 
-    public void onFrameStart(Entity a_entity) {
+    public void run(Entity a_entity) {
         if (a_entity.getFirstComponentOfType(MaterialTypeComponent.class).materialType == MaterialType.VACUUM)
             return;
         PositionComponent pos = a_entity.getFirstComponentOfType(PositionComponent.class);

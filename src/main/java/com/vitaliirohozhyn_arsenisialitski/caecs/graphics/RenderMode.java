@@ -1,5 +1,8 @@
 package com.vitaliirohozhyn_arsenisialitski.caecs.graphics;
 
+/**
+ * Enum, w którym są tworzone możliwe tryby rysowania grafiki
+ */
 public enum RenderMode {
     NORMAL("Normal"),
     ELECTRICAL("Electrical"),

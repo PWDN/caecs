@@ -1,12 +1,13 @@
 package com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components;
 
-import java.io.Serializable;
-
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Komponent ładunku. Przechowywuje ładunek w jednostkach abstrakcyjnych
+ */
 public class ChargeComponent implements Component {
     public Double charge;
 

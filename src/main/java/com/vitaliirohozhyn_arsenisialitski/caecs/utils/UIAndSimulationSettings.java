@@ -27,12 +27,23 @@ public class UIAndSimulationSettings {
         this.renderMode = a_renderMode;
     }
 
+    /**
+     * Generacja JSON danych klasy
+     * 
+     * @return zgenerowany JSON
+     */
     public JSONObject toJSON() {
         return new JSONObject().put("gravityEnabled", this.gravityEnabled)
                 .put("selectedInstrument", this.selectedInstrument.ordinal())
                 .put("renderMode", this.renderMode.ordinal());
     }
 
+    /**
+     * Ładowanie danych do klasy z JSON
+     * 
+     * @param settings obiekt JSON
+     * @throws JSONException konwertacja JSON może powodować błąd
+     */
     public void fromJSON(JSONObject settings) throws JSONException {
         for (String key : settings.keySet()) {
             switch (key) {

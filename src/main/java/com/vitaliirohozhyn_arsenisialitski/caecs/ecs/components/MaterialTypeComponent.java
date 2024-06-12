@@ -4,9 +4,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
-
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.MaterialType;
 
+/**
+ * Komponent, przechowywujący typ materiału {@link Entity}. Typy materiałów są
+ * zdefiniowane w {@link MaterialType}
+ */
 public class MaterialTypeComponent implements Component {
     public MaterialType materialType;
 

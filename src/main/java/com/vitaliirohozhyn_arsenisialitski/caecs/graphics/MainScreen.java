@@ -1,42 +1,28 @@
 package com.vitaliirohozhyn_arsenisialitski.caecs.graphics;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Scanner;
 
 import javax.swing.BorderFactory;
-import javax.swing.JRadioButton;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.plaf.FileChooserUI;
 
 import org.json.JSONObject;
 
@@ -96,17 +82,19 @@ public class MainScreen {
         selectRenderMode.setAlignmentX(-selectRenderMode.getPreferredSize().width / 2);
         selectRenderMode.setBorder(color);
         selectRenderMode.setSelectedIndex(0);
+        selectRenderMode.setMaximumSize(selectRenderMode.getPreferredSize());
         selectRenderMode.addItemListener((l) -> {
             this.settings.renderMode = modes[selectRenderMode.getSelectedIndex()];
         });
-        selectRenderMode.setMaximumSize(selectRenderMode.getPreferredSize());
         gravity.addItemListener((l) -> {
             this.settings.gravityEnabled = gravity.isSelected();
         });
         btn.setBorder(BorderFactory.createLineBorder(Color.BLUE));
+        panel.add(new JLabel("Choose render mode:"));
         panel.add(selectRenderMode);
         this.selectRenderMode = selectRenderMode;
         panel.add(gravity);
+        panel.add(new JLabel("Instruments:"));
         for (ToolBarInstrument i : ToolBarInstrument.values()) {
             JButton btn_in = new JButton(i.name);
             btn_in.addActionListener((l) -> {

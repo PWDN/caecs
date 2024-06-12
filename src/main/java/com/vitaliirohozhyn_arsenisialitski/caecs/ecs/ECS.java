@@ -61,7 +61,7 @@ public class ECS {
         ArrayList<Callable<Void>> threadedSystems = new ArrayList<Callable<Void>>();
         for (ECSSystem i : this.systemList) {
             threadedSystems.add(() -> {
-                i.onFrameStart(a_entity);
+                i.run(a_entity);
                 return null;
             });
         }

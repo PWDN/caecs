@@ -15,13 +15,15 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.ECS;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ChargeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.ColorComponent;
-import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialTypeComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.TemperatureComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.Utils;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.utils.UIAndSimulationSettings;
 
+/**
+ * Panel, w którym są rysowane wszystkie {@link Entity}
+ */
 public class Viewport extends JPanel {
     public Consumer<Point> useOnClick;
     private final ECS ecs; // Defaut:
@@ -63,16 +65,16 @@ public class Viewport extends JPanel {
                 useOnClick.accept(newP);
             }
 
-            public void mousePressed(MouseEvent e) {
+            public void mouseEntered(MouseEvent arg0) {
             }
 
-            public void mouseReleased(MouseEvent e) {
+            public void mouseExited(MouseEvent arg0) {
             }
 
-            public void mouseEntered(MouseEvent e) {
+            public void mousePressed(MouseEvent arg0) {
             }
 
-            public void mouseExited(MouseEvent e) {
+            public void mouseReleased(MouseEvent arg0) {
             }
         });
     }
@@ -129,7 +131,6 @@ public class Viewport extends JPanel {
                             pixel_size,
                             pixel_size);
                     if (chrg >= over_charge_down && chrg <= over_charge_up) {
-                        // Color ovch = Utils.moveColorTowards(clr, finalColor, speedColor);
                         g.setColor(Color.WHITE);
                         g.fillRect(
                                 (int) Math.round(

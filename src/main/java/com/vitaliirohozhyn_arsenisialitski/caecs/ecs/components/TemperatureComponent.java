@@ -4,7 +4,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
 
+/**
+ * Komponent, przechowywujący temperaturę {@link Entity} oraz czy jest na ogniu.
+ */
 public class TemperatureComponent implements Component {
     public Double temperature; // In Kelvins
     public Boolean isOnFire;

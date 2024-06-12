@@ -4,7 +4,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
 
+/**
+ * Komponent, przechowywujący obecne koordynaty {@link Entity}
+ */
 public class PositionComponent implements Component {
     public Integer x, y;
 

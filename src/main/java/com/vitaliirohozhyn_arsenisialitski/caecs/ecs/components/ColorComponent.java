@@ -3,10 +3,14 @@ package com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components;
 import java.awt.Color;
 
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Component;
+import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.Entity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Komponent przechowywujący obecny kolor {@link Entity}
+ */
 public class ColorComponent implements Component {
     public Color color;
 

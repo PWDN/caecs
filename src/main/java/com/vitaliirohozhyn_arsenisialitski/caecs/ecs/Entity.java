@@ -13,13 +13,24 @@ import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.MaterialTypeComp
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.PositionComponent;
 import com.vitaliirohozhyn_arsenisialitski.caecs.ecs.components.TemperatureComponent;
 
+/**
+ * Klasa entity, czyli "kontejnera" do przechowywania {@link Component}
+ */
 public class Entity {
     private final ArrayList<Component> componentList;
 
+    /**
+     * Konstruktor pustego Entity
+     */
     public Entity() {
         this.componentList = new ArrayList<Component>();
     }
 
+    /**
+     * Konstruktor z możliwością przekazania szeregu komponentów
+     *
+     * @param a_componentList
+     */
     public Entity(Component[] a_componentList) {
         this.componentList = new ArrayList<Component>();
         for (Component i : a_componentList) {
@@ -27,6 +38,13 @@ public class Entity {
         }
     }
 
+    /**
+     * Konstruktor dla tworzenia Entity na podstawie szeregu komponentów JSON
+     *
+     * @param a_componentListJSON szereg JSON komponentów
+     * @throws JSONException ponieważ nie mamy pewności w poprawności JSON'u, może
+     *                       wystąpić błąd
+     */
     public Entity(JSONArray a_componentListJSON) throws JSONException {
         this.componentList = new ArrayList<Component>();
         for (Object i : a_componentListJSON) {
@@ -57,10 +75,21 @@ public class Entity {
         }
     }
 
+    /**
+     * Dodawanie komponentu
+     *
+     * @param a_component dodawany komponent
+     */
     public void addComponent(Component a_component) {
         this.componentList.add(a_component);
     }
 
+    /**
+     * Sprawdzenie, czy dany entity posiada komponent pewnego typu.
+     *
+     * @param a_class klasa szukanego komponentu
+     * @return tak/nie
+     */
     public boolean doesEntityHasComponentOfType(Class<? extends Component> a_class) {
         for (Component i : this.componentList) {
             if (a_class == i.getClass())
@@ -69,14 +98,25 @@ public class Entity {
         return false;
     }
 
+    /**
+     * Pobieranie pierwszego {@link Component} wpowadzanego typu
+     *
+     * @param <T>
+     * @param a_class Klasa komponentu
+     * @return komponent lub null
+     */
     public <T extends Component> T getFirstComponentOfType(Class<T> a_class) {
         for (Component i : this.componentList) {
             if (a_class == i.getClass())
                 return (T) i;
         }
-        throw new RuntimeException("Unhandled search of component in entity");
+        return null;
     }
 
+    /**
+     * Generowanie {@link String} na podstawie wartości obiektu. Korzystne dla
+     * debug'u
+     */
     public String toString() {
         StringBuilder build = new StringBuilder();
         for (Component i : this.componentList) {
@@ -87,6 +127,11 @@ public class Entity {
         return build.toString();
     }
 
+    /**
+     * Generacja JSON na podstawie danych obiektu klasy
+     *
+     * @return zgenerowany JSON
+     */
     public JSONArray toJSON() {
         JSONArray res = new JSONArray();
         for (Component i : this.componentList) {
